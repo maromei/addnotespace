@@ -32,7 +32,7 @@ Issues = "https://github.com/unknown/addnotespace/issues"
 Source = "https://github.com/unknown/addnotespace"
 
 [tool.hatch.version]
-path = "addnotespace/__about__.py"
+path = "src/__about__.py"
 
 [tool.hatch.envs.default]
 dependencies = [
@@ -50,7 +50,7 @@ python = ["37", "38", "39", "310", "311"]
 branch = true
 parallel = true
 omit = [
-  "addnotespace/__about__.py",
+  "src/__about__.py",
 ]
 
 [tool.coverage.report]
