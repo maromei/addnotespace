@@ -23,7 +23,10 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
+dependencies = [
+  "python-dotenv",
+  "pyqt5"
+]
 dynamic = ["version"]
 
 [project.urls]
@@ -59,3 +62,11 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
 ]
+
+[tool.hatch.envs.dev]
+
+[tool.hatch.envs.dev.scripts]
+run = "python src/main.py"
+
+[tool.hatch.envs.dev.env-vars]
+DOTENV_PATH = "env_files/dev.env"
