@@ -1,0 +1,3 @@
+QWidget {
+    background-color: @polar-night-1;
+}
