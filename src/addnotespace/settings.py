@@ -25,3 +25,5 @@ MAIN_WINDOW_UI_PATH = \
 
 FOLDER_ICON_PATH = \
     UI_FOLDER_PATH / os.environ.get("FOLDER_ICON_NAME", "folder_icon.png")
+
+DEFAULT_PATH = os.environ.get("DEFAULT_PATH", "defaults.json")
