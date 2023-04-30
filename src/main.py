@@ -1,7 +1,9 @@
 import os
 import sys
+import logging.config
 
-from pathlib import Path
+from logger_config import LOGGING_CONFIG
+logging.config.dictConfig(LOGGING_CONFIG)
 
 from PyQt5.QtWidgets import QApplication
 
