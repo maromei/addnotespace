@@ -32,6 +32,9 @@ class MainWindow(QMainWindow):
     default_loader_load_button: QPushButton = None
     default_loader_save_button: QPushButton = None
 
+    bulk_run_button: QPushButton = None
+    single_run_button: QPushButton = None
+
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
 
@@ -59,6 +62,15 @@ class MainWindow(QMainWindow):
 
         self.default_loader_load_button.pressed.connect(self.load_defaults)
         self.default_loader_save_button.pressed.connect(self.save_defaults)
+
+        self.bulk_run_button.pressed.connect(self.run_bulk)
+        self.single_run_button.pressed.connect(self.run_single)
+
+    def run_bulk(self):
+        pass  # TODO
+
+    def run_single(self):
+        pass  # TODO
 
     def open_bulk_folder_select(self):
         """
@@ -107,11 +119,7 @@ class MainWindow(QMainWindow):
         if file_name == "":
             return
 
-        try:
-            file_name = self.validate_and_modify_new_file_name(file_name)
-        except ValueError as e:
-            return  # TODO dialogue of non existant parent directory, though it should never happen lol
-
+        file_name = self.validate_and_modify_new_file_name(file_name)
         self.single_new_name_line_edit.setText(file_name)
 
     def validate_and_modify_new_file_name(self, file_name: str) -> str:
