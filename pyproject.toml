@@ -16,7 +16,6 @@ classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python",
   "Programming Language :: Python :: Implementation :: PyPy",
-  "Framework :: PyQt5",
 ]
 dependencies = [
   "python-dotenv",
