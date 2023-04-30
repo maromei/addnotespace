@@ -15,7 +15,7 @@ class DefaultValues:
 
     margin_top: int = 0 #:
     margin_right: int = 0 #:
-    margin_bottom: int = 0 #:
+    margin_bot: int = 0 #:
     margin_left: int = 0 #:
 
     bulk_folder: str = "" #:
