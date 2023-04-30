@@ -64,3 +64,15 @@ run = "python src/main.py"
 
 [tool.hatch.envs.dev.env-vars]
 DOTENV_PATH = "env_files/dev.env"
+
+[tool.hatch.envs.style]
+skip-install = true
+detached = true
+python = "3.10"
+dependencies = [
+  "pre-commit",
+  "black"
+]
+
+[tool.hatch.envs.style.scripts]
+precommit-install = "pre-commit install"
