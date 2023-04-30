@@ -9,9 +9,7 @@ logger = getLogger(__name__)
 
 
 def replace_style_variables(
-    variable_file: str,
-    template_path: str,
-    style_sheet_path: str
+    variable_file: str, template_path: str, style_sheet_path: str
 ):
     """
     Reads the file :code:`template_path` and replaces the variables
@@ -68,10 +66,7 @@ def load_styles(app: QApplication, style_file_path: str):
         with open(style_file_path, "r") as f:
             app.setStyleSheet(f.read())
     except FileNotFoundError as e:
-        logger.error(
-            f"Could not load the style sheet '{style_file_path}'.\n"
-            f"{e}"
-        )
+        logger.error(f"Could not load the style sheet '{style_file_path}'.\n" f"{e}")
         raise e
 
 
@@ -80,24 +75,19 @@ def prepare_variable_dict(variables: dict[str, str]):
     Replaces values in the form of :code:`@key` with the
     value corresponding to that key in the variables dictionary.
 
+    If a certain variable is not found, a blank string will be inserted.
+
     Args:
         variables (dict[str, str]): Variable dictionary
-
-    Raises:
-        KeyError: If the key was not found.
     """
 
+    def get_variable_value(dic, value):
+
+        if value.startswith("@"):
+            new_value = dic.get(value[1:], "")
+            return get_variable_value(dic, new_value)
+
+        return value
+
     for name, value in variables.items():
-
-        if not value.startswith("@"):
-            continue
-
-        try:
-            variables[name] = variables[value[1:]]
-        except KeyError as e:
-            logger.error(
-                "Tried replaceing variables in stylesheet variable dict. "
-                f"Entry '{name}' has the value '{value}', which was not "
-                f"found.\n{e}"
-            )
-            raise e
+        variables[name] = get_variable_value(variables, value)
