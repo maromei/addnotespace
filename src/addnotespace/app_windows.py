@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
     def __init__(
         self,
         main_window_ui_file_path: str|Path,
-        folder_icon_path: str|Path,
+        folder_icon_path: str,
         *args,
         **kwargs
     ):

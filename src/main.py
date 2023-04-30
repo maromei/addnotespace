@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     window = MainWindow(
         settings.MAIN_WINDOW_UI_PATH,
-        settings.FOLDER_ICON_PATH
+        str(settings.FOLDER_ICON_PATH)
     )
     window.show()
 
