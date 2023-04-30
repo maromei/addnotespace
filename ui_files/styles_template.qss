@@ -1,6 +1,6 @@
 QWidget {
     background-color: @background-color;
-    color: @snow-storm-s3;
+    color: @default-text-color;
 }
 
 QLineEdit {
@@ -36,4 +36,21 @@ QPushButton:pressed {
 #single_folder_button:pressed,
 #single_new_name_button:pressed {
     background-color: @polar-night-s2;
+}
+
+InfoDialog[message_type="info"] QLabel {
+    color: @info-text-color;
+}
+
+InfoDialog[message_type="warning"] QLabel {
+    color: @warning-text-color;
+}
+
+InfoDialog[message_type="error"] QLabel {
+    color: @error-text-color;
+}
+
+#ok_button {
+    height: 1.5em;
+    width: 1.5em;
 }

@@ -37,3 +37,20 @@ QPushButton:pressed {
 #single_new_name_button:pressed {
     background-color: #3b4252;
 }
+
+InfoDialog[message_type="info"] QLabel {
+    color: #eceff4;
+}
+
+InfoDialog[message_type="warning"] QLabel {
+    color: #ebcb8b;
+}
+
+InfoDialog[message_type="error"] QLabel {
+    color: #bf616a;
+}
+
+#ok_button {
+    height: 1.5em;
+    width: 1.5em;
+}

@@ -1,12 +1,24 @@
 from pathlib import Path
+from logging import getLogger
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QLineEdit, QFileDialog
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QPushButton,
+    QLineEdit,
+    QFileDialog,
+    QDialog,
+    QLabel,
+    QLayout,
+)
 from PyQt5.QtGui import QIntValidator, QIcon
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize, Qt
 
 from addnotespace import settings
 from addnotespace.defaults import DefaultValues, load_defaults, dump_defaults
+
+
+logger = getLogger(__name__)
 
 
 class MainWindow(QMainWindow):
@@ -270,3 +282,41 @@ class MainWindow(QMainWindow):
         self.single_new_name_line_edit.setPlaceholderText(
             self.defaults.single_file_target_folder
         )
+
+
+class InfoDialog(QDialog):
+
+    MESSAGE_TYPE_DISPLAY_MAP = {
+        "info": "Info:",
+        "warning": "Warning:",
+        "error": "ERROR:",
+    }
+
+    error_type: QLabel = None
+    error_text: QLabel = None
+
+    ok_button: QPushButton = None
+
+    def __init__(self, message_type: str, message: str, *args, **kwargs):
+        super(InfoDialog, self).__init__(*args, **kwargs)
+
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+
+        if message_type not in self.MESSAGE_TYPE_DISPLAY_MAP.keys():
+            message_type = "info"
+            logger.warning(
+                "The Info Dialog was created with an "
+                f"invalid message type: '{message_type}'. "
+                "Switched back to type 'info'."
+            )
+
+        self.setProperty("message_type", message_type)
+
+        uic.loadUi(settings.INFO_DIALOGUE_UI_PATH, self)
+        self.ok_button.pressed.connect(self.close)
+
+        self.error_type.setText(self.MESSAGE_TYPE_DISPLAY_MAP[message_type])
+        self.error_text.setText(message)
+
+        layout: QLayout = self.layout()
+        layout.setSizeConstraint(QLayout.SetFixedSize)

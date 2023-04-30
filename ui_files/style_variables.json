@@ -16,5 +16,9 @@
     "aurora-green": "#a3be8c",
     "aurora-purple": "#b48ead",
 
-    "background-color": "@polar-night-s1"
+    "background-color": "@polar-night-s1",
+    "default-text-color": "@snow-storm-s3",
+    "warning-text-color": "@aurora-yellow",
+    "error-text-color": "@aurora-red",
+    "info-text-color": "@default-text-color"
 }

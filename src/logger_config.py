@@ -17,16 +17,16 @@ LOGGING_HANDLERS = {
         "class": "logging.handlers.RotatingFileHandler",
         "filename": "logs/log.txt",
         "mode": "a+",
-        "maxBytes": 5 * 10**6, # 5 MegaBytes
+        "maxBytes": 5 * 10**6,  # 5 MegaBytes
         "backupCount": 1,
-    }
+    },
 }
 
 
 DEFAULT_LOGGER_CONFIG = {
     "handlers": ["console_info", "file_info"],
     "level": "WARNING",
-    "propagate": True,
+    "propagate": False,
 }
 
 
@@ -36,6 +36,7 @@ LOGGERS = {
     "addnotespace.settings": DEFAULT_LOGGER_CONFIG,
     "addnotespace.style_loader": DEFAULT_LOGGER_CONFIG,
     "addnotespace.defaults": DEFAULT_LOGGER_CONFIG,
+    "addnotespace.app_windows": DEFAULT_LOGGER_CONFIG,
 }
 
 
