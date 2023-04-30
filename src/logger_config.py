@@ -1,6 +1,6 @@
 LOGGING_FORMATTERS = {
     "standard": {
-        "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+        "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     },
 }
 
@@ -9,7 +9,7 @@ LOGGING_HANDLERS = {
         "level": "INFO",
         "formatter": "standard",
         "class": "logging.StreamHandler",
-        "stream": "ext://sys.stdout"
+        "stream": "ext://sys.stdout",
     },
     "file_info": {
         "level": "INFO",
@@ -18,7 +18,7 @@ LOGGING_HANDLERS = {
         "filename": "logs/log.txt",
         "mode": "a+",
         "maxBytes": 5 * 10**6, # 5 MegaBytes
-        "backupCount": 1
+        "backupCount": 1,
     }
 }
 
@@ -26,7 +26,7 @@ LOGGING_HANDLERS = {
 DEFAULT_LOGGER_CONFIG = {
     "handlers": ["console_info", "file_info"],
     "level": "WARNING",
-    "propagate": True
+    "propagate": True,
 }
 
 
@@ -34,7 +34,8 @@ LOGGERS = {
     "": DEFAULT_LOGGER_CONFIG,
     "addnotespace": DEFAULT_LOGGER_CONFIG,
     "addnotespace.settings": DEFAULT_LOGGER_CONFIG,
-    "addnotespace.style_loader": DEFAULT_LOGGER_CONFIG
+    "addnotespace.style_loader": DEFAULT_LOGGER_CONFIG,
+    "addnotespace.defaults": DEFAULT_LOGGER_CONFIG,
 }
 
 
@@ -43,5 +44,5 @@ LOGGING_CONFIG = {
     "disable_existing_loggers": True,
     "formatters": LOGGING_FORMATTERS,
     "handlers": LOGGING_HANDLERS,
-    "loggers": LOGGERS
+    "loggers": LOGGERS,
 }
