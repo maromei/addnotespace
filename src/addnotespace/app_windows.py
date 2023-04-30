@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QIntValidator, QIcon
 from PyQt5.QtCore import QSize
 
+from addnotespace import settings
+
 
 class MainWindow(QMainWindow):
 
@@ -23,27 +25,29 @@ class MainWindow(QMainWindow):
     single_folder_button: QPushButton = None
     single_new_name_button: QPushButton = None
 
-    bulk_folder_button: QPushButton = None
 
-
-    def __init__(
-        self,
-        main_window_ui_file_path: str|Path,
-        folder_icon_path: str,
-        *args,
-        **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
 
-        uic.loadUi(main_window_ui_file_path, self)
+        uic.loadUi(settings.MAIN_WINDOW_UI_PATH, self)
         self.setup_margin_form_input()
-        self.setup_folder_button_icons(folder_icon_path)
+        self.setup_folder_button_icons(str(settings.FOLDER_ICON_PATH))
 
-        self.bulk_folder_button.pressed.connect(self.bulk_folder_button_pressed)
+        self.bulk_folder_button.pressed.connect(self.open_bulk_folder_select)
+        self.single_folder_button.pressed.connect(self.open_file_select)
+        self.single_new_name_button.pressed.connect(self.open_new_file_location_select)
 
 
-    def bulk_folder_button_pressed(self):
-        print("Click")
+    def open_bulk_folder_select(self):
+        pass
+
+
+    def open_file_select(self):
+        pass
+
+
+    def open_new_file_location_select(self):
+        pass
 
 
     def setup_margin_form_input(self):
