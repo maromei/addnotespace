@@ -1,11 +1,7 @@
 from pathlib import Path
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import (
-    QMainWindow,
-    QPushButton,
-    QLineEdit
-)
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QLineEdit, QFileDialog
 from PyQt5.QtGui import QIntValidator, QIcon
 from PyQt5.QtCore import QSize
 
@@ -36,7 +32,6 @@ class MainWindow(QMainWindow):
     default_loader_load_button: QPushButton = None
     default_loader_save_button: QPushButton = None
 
-
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
 
@@ -66,16 +61,113 @@ class MainWindow(QMainWindow):
         self.default_loader_save_button.pressed.connect(self.save_defaults)
 
     def open_bulk_folder_select(self):
-        pass
+        """
+        Opens a :code:`QFileDialog` to select a directory for the bulk run
+        directory.
+        """
 
+        dir_name = QFileDialog.getExistingDirectory(
+            self, "Select Bulk Directory", self.defaults.bulk_folder
+        )
+
+        if dir_name == "":
+            return
+
+        self.bulk_folder_line_edit.setText(dir_name)
 
     def open_file_select(self):
-        pass
+        """
+        Opens a :code:`QFileDialog` to select a single PDF file.
+        The full path to that file is put into the
+        :code:`single_folder_line_edit` field.
+        """
 
+        file_name, _ = QFileDialog.getOpenFileName(
+            self, "Select File", self.defaults.single_file_folder, "PDFs (*.pdf)"
+        )
+
+        if file_name == "":
+            return
+
+        self.single_folder_line_edit.setText(file_name)
 
     def open_new_file_location_select(self):
-        pass
+        """
+        Opens a :code:`QFileDialog` to select a new file name for the
+        new file.
+        """
 
+        file_name, _ = QFileDialog.getSaveFileName(
+            self,
+            "Set new File Name",
+            self.defaults.single_file_target_folder,
+            "PDFs (*.pdf)",
+        )
+
+        if file_name == "":
+            return
+
+        try:
+            file_name = self.validate_and_modify_new_file_name(file_name)
+        except ValueError as e:
+            return  # TODO dialogue of non existant parent directory, though it should never happen lol
+
+        self.single_new_name_line_edit.setText(file_name)
+
+    def validate_and_modify_new_file_name(self, file_name: str) -> str:
+        """
+        Checks whether the new file name ends with :code:`.pdf` and
+        sets the file ending accordingly.
+
+        Args:
+            file_name (str):
+
+        Returns:
+            str: modified file name
+
+        Raises:
+            ValueError: If the parent directory of the file does not exist.
+        """
+
+        if not file_name.endswith(".pdf"):
+            file_name = f"{file_name}.pdf"
+
+        parent_dir = Path(file_name).parent
+        if not parent_dir.exists():
+            raise ValueError(
+                f"Could not save the file '{Path(file_name).absolute()}'.\n"
+                f"The directory '{parent_dir}' does not exist."
+            )
+
+        return file_name
+
+    def validate_and_modify_defaults(self, defaults: DefaultValues) -> bool:
+        """
+        Checks the paths in the default values and sets them to an empty string
+        if the directory does not exist.
+
+        Args:
+            defaults (DefaultValues):
+
+        Returns:
+            bool: True if nothing was changed. False otherwise.
+        """
+
+        all_good = True
+
+        if not Path(defaults.single_file_folder).exists():
+            defaults.single_file_folder = ""
+            all_good = False
+
+        if not Path(defaults.single_file_target_folder).exists():
+            self.defaults.single_file_target_folder = ""
+            all_good = False
+
+        if not Path(defaults.bulk_folder).exists():
+            defaults.bulk_folder = ""
+            all_good = False
+
+        return all_good
 
     def load_defaults(self):
         """
@@ -84,8 +176,8 @@ class MainWindow(QMainWindow):
         """
 
         self.defaults = load_defaults(settings.DEFAULT_PATH)
+        self.validate_and_modify_defaults(self.defaults)
         self.write_defaults_to_fields()
-
 
     def save_defaults(self):
         """
@@ -112,8 +204,10 @@ class MainWindow(QMainWindow):
             single_file_target_folder=single_file_target_folder,
         )
 
+        self.validate_and_modify_defaults(default_values)
+        self.defaults = default_values
         dump_defaults(default_values, settings.DEFAULT_PATH)
-
+        self.write_defaults_to_fields()
 
     def setup_margin_form_input(self):
         """
@@ -127,7 +221,6 @@ class MainWindow(QMainWindow):
         self.margin_right_line_edit.setValidator(only_pos_int_validator)
         self.margin_bot_line_edit.setValidator(only_pos_int_validator)
         self.margin_left_line_edit.setValidator(only_pos_int_validator)
-
 
     def setup_folder_button_icons(self, icon_path: str):
         """
@@ -148,7 +241,6 @@ class MainWindow(QMainWindow):
 
         self.single_new_name_button.setIcon(QIcon(icon_path))
         self.single_new_name_button.setIconSize(icon_size)
-
 
     def write_defaults_to_fields(self):
         """
