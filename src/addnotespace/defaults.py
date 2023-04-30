@@ -58,4 +58,4 @@ def dump_defaults(default_values: DefaultValues, file_path:str|Path):
 
     default_dict: dict = default_values.__dict__
     with open(file_path, "w+") as f:
-        json.dump(default_dict, f)
+        json.dump(default_dict, f, indent=4)
