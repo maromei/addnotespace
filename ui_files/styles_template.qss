@@ -1,3 +1,39 @@
 QWidget {
-    background-color: @polar-night-1;
+    background-color: @background-color;
+    color: @snow-storm-s3;
+}
+
+QLineEdit {
+    background-color: @polar-night-s2;
+    border-radius: 5px;
+    height: 1.5em;
+}
+
+QPushButton {
+    border-radius: 5px;
+    height: 1.5em;
+    background-color: @polar-night-s2;
+    padding: 0.5em;
+}
+
+QPushButton:pressed {
+    background-color: @polar-night-s1;
+}
+
+#margin_form_container QLineEdit {
+    width: 2em;
+}
+
+#bulk_folder_button,
+#single_folder_button,
+#single_new_name_button {
+    width: 2em;
+    padding: 0;
+    background-color: @background-color;
+}
+
+#bulk_folder_button:pressed,
+#single_folder_button:pressed,
+#single_new_name_button:pressed {
+    background-color: @polar-night-s2;
 }

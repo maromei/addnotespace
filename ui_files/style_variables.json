@@ -1,6 +1,20 @@
 {
-    "polar-night-1": "#2e3440",
-    "polar-night-2": "#3b4252",
-    "polar-night-3": "#434c5e",
-    "polar-night-4": "#4c566a"
+    "polar-night-s1": "#2e3440",
+    "polar-night-s2": "#3b4252",
+    "polar-night-s3": "#434c5e",
+    "polar-night-s4": "#4c566a",
+    "snow-storm-s1": "#d8dee9",
+    "snow-storm-s2": "#e5e9f0",
+    "snow-storm-s3": "#eceff4",
+    "frost-s1": "#8fbcbb",
+    "frost-s2": "#88c0d0",
+    "frost-s3": "#81a1c1",
+    "frost-s4": "#5e81ac",
+    "aurora-red": "#bf616a",
+    "aurora-orange": "#d08770",
+    "aurora-yellow": "#ebcb8b",
+    "aurora-green": "#a3be8c",
+    "aurora-purple": "#b48ead",
+
+    "background-color": "@polar-night-s1"
 }
