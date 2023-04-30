@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from PyQt5 import uic
 from PyQt5.QtWidgets import (
     QMainWindow,
@@ -24,12 +26,18 @@ class MainWindow(QMainWindow):
     bulk_folder_button: QPushButton = None
 
 
-    def __init__(self, ui_folder_path, *args, **kwargs):
+    def __init__(
+        self,
+        main_window_ui_file_path: str|Path,
+        folder_icon_path: str|Path,
+        *args,
+        **kwargs
+    ):
         super(MainWindow, self).__init__(*args, **kwargs)
 
-        uic.loadUi(ui_folder_path / "main_window.ui", self)
+        uic.loadUi(main_window_ui_file_path, self)
         self.setup_margin_form_input()
-        self.setup_folder_button_icons("ui_files/folder_icon.png")
+        self.setup_folder_button_icons(folder_icon_path)
 
         self.bulk_folder_button.pressed.connect(self.bulk_folder_button_pressed)
 

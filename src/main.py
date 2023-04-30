@@ -1,4 +1,3 @@
-import os
 import sys
 import logging.config
 
@@ -27,7 +26,10 @@ if __name__ == "__main__":
         settings.STYLE_SHEET_PATH
     )
 
-    window = MainWindow(settings.UI_FOLDER_PATH)
+    window = MainWindow(
+        settings.MAIN_WINDOW_UI_PATH,
+        settings.FOLDER_ICON_PATH
+    )
     window.show()
 
     app.exec_()

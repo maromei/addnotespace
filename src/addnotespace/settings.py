@@ -19,3 +19,9 @@ STYLE_VARIABLE_PATH = \
     UI_FOLDER_PATH / os.environ.get("STYLE_VAR_NAME", "style_variables.json")
 
 REPLACE_STYLE_VARIABLES = os.environ.get("REPLACE_STYLE_VARIABLES", False)
+
+MAIN_WINDOW_UI_PATH = \
+    UI_FOLDER_PATH / os.environ.get("MAIN_WINDOW_UI_FILE_NAME", "main_window.ui")
+
+FOLDER_ICON_PATH = \
+    UI_FOLDER_PATH / os.environ.get("FOLDER_ICON_NAME", "folder_icon.png")
