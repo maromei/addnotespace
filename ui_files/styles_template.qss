@@ -54,3 +54,11 @@ InfoDialog[message_type="error"] QLabel {
     height: 1.5em;
     width: 1.5em;
 }
+
+QProgressBar {
+    text-align: center;
+}
+
+QProgressBar::chunk {
+    background-color: @polar-night-s4;
+}
