@@ -47,3 +47,7 @@ LOGGING_CONFIG = {
     "handlers": LOGGING_HANDLERS,
     "loggers": LOGGERS,
 }
+
+
+class MainWindow:
+    pass

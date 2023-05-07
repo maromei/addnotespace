@@ -1,3 +1,5 @@
+import os
+import sys
 from pathlib import Path
 from logging import getLogger
 
@@ -10,11 +12,12 @@ from PyQt5.QtWidgets import (
     QDialog,
     QLabel,
     QLayout,
+    QProgressBar,
 )
 from PyQt5.QtGui import QIntValidator, QIcon
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtCore import QSize, Qt, QThread, pyqtSignal
 
-from addnotespace import settings
+from addnotespace import settings, pdf
 from addnotespace.defaults import DefaultValues, load_defaults, dump_defaults
 
 
@@ -79,10 +82,101 @@ class MainWindow(QMainWindow):
         self.single_run_button.pressed.connect(self.run_single)
 
     def run_bulk(self):
-        pass  # TODO
+
+        bulk_folder = self.bulk_folder_line_edit.text()
+        bulk_folder = Path(bulk_folder).absolute()
+
+        if not bulk_folder.exists():
+            message = InfoDialog(
+                "error", "The bulk folder is no longer available. Please set it again."
+            )
+            message.exec_()
+            self.bulk_folder_line_edit.setText("")
+            return
+
+        file_suffix = self.bulk_ending_line_edit.text()
+        if file_suffix == "":
+            message = InfoDialog("error", "The file ending can not be empty.")
+            message.exec_()
+            return
+
+        file_list = []
+        out_files = []
+        for file in os.listdir(bulk_folder):
+
+            if not file.endswith(".pdf"):
+                continue
+
+            out_file_name = file.split(".")
+            out_file_name = ".".join(out_file_name[:-1])
+            out_file_name = f"{out_file_name}{file_suffix}.pdf"
+
+            file_list.append(str(bulk_folder / file))
+            out_files.append(str(bulk_folder / out_file_name))
+
+        if len(file_list) == 0:
+            message = InfoDialog(
+                "info", f"No PDF File was found in the directory: '{bulk_folder}'"
+            )
+            message.exec_()
+            return
+
+        progress_dialogue = MarginProgressDialog(
+            file_list,
+            out_files,
+            int(self.margin_top_line_edit.text()) / 100,
+            int(self.margin_right_line_edit.text()) / 100,
+            int(self.margin_bot_line_edit.text()) / 100,
+            int(self.margin_left_line_edit.text()) / 100,
+        )
+
+        progress_dialogue.exec_()
 
     def run_single(self):
-        pass  # TODO
+
+        file_name = self.single_folder_line_edit.text()
+        file_name_empty = file_name == ""
+        file_name = Path(file_name).absolute()
+
+        new_file_name = self.single_new_name_line_edit.text()
+        new_file_name_empty = new_file_name == ""
+        new_file_name = Path(new_file_name).absolute()
+
+        if file_name_empty or new_file_name_empty:
+            message = InfoDialog("error", "The filenames cannot be empty.")
+            message.exec_()
+            return
+
+        file_valid = file_name.exists() and str(file_name).endswith(".pdf")
+        if not file_valid:
+            message = InfoDialog("error", "The selected file does not exist anymore.")
+            message.exec_()
+            self.single_folder_line_edit.setText("")
+            return
+
+        if not new_file_name.parent.exists():
+            message = InfoDialog(
+                "error",
+                "The selected directory for the new file does not exist anymore.",
+            )
+            message.exec_()
+            self.single_new_name_line_edit.setText("")
+            return
+
+        progress_dialogue = MarginProgressDialog(
+            [
+                str(file_name),
+            ],
+            [
+                str(new_file_name),
+            ],
+            int(self.margin_top_line_edit.text()) / 100,
+            int(self.margin_right_line_edit.text()) / 100,
+            int(self.margin_bot_line_edit.text()) / 100,
+            int(self.margin_left_line_edit.text()) / 100,
+        )
+
+        progress_dialogue.exec_()
 
     def open_bulk_folder_select(self):
         """
@@ -320,3 +414,103 @@ class InfoDialog(QDialog):
 
         layout: QLayout = self.layout()
         layout.setSizeConstraint(QLayout.SetFixedSize)
+
+
+class MarginProgressDialog(QDialog):
+
+    finish_button: QPushButton
+    progress_bar: QProgressBar
+    progress_text: QLabel
+
+    def __init__(
+        self,
+        in_paths: list[str],
+        out_paths: list[str],
+        top_mod: float,
+        right_mod: float,
+        bot_mod: float,
+        left_mod: float,
+        *args,
+        **kwargs,
+    ):
+        super(MarginProgressDialog, self).__init__(*args, **kwargs)
+
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        uic.loadUi(settings.PROGRESS_DIALOGUE_UI_PATH, self)
+
+        self.finish_button.pressed.connect(self.close)
+
+        self.margin_thread = AddMarginThread(
+            in_paths, out_paths, top_mod, right_mod, bot_mod, left_mod
+        )
+
+        self.margin_thread.progress_signal.connect(self.update_progress_bar)
+        self.margin_thread.progress_text_signal.connect(self.update_working_on_text)
+        self.margin_thread.start()
+
+    def update_progress_bar(self, progress_value: int):
+
+        if progress_value == -1:
+            progress_value = 100
+            self.finish()
+
+        self.progress_bar.setValue(progress_value)
+
+    def update_working_on_text(self, display_text: str):
+
+        self.progress_text.setText(display_text)
+
+    def finish(self):
+
+        self.finish_button.setText("Close")
+        self.finish_button.setEnabled(True)
+
+
+class AddMarginThread(QThread):
+
+    progress_signal = pyqtSignal(int)
+    progress_text_signal = pyqtSignal(str)
+
+    def __init__(
+        self,
+        in_paths: list[str],
+        out_paths: list[str],
+        top_mod: float,
+        right_mod: float,
+        bot_mod: float,
+        left_mod: float,
+        *args,
+        **kwargs,
+    ):
+        super(AddMarginThread, self).__init__(*args, **kwargs)
+
+        self.in_paths = in_paths
+        self.out_paths = out_paths
+        self.top_mod = top_mod
+        self.right_mod = right_mod
+        self.bot_mod = bot_mod
+        self.left_mod = left_mod
+
+    def run(self):
+
+        for i in range(len(self.in_paths)):
+
+            display_path = self.in_paths[i].split("/")[-1]
+            display_path = f"Working on: {display_path} ({i+1}/{len(self.in_paths)})"
+
+            self.progress_text_signal.emit(display_path)
+
+            pdf.add_margin(
+                self.in_paths[i],
+                self.out_paths[i],
+                self.top_mod,
+                self.right_mod,
+                self.bot_mod,
+                self.left_mod,
+            )
+
+            percentage = (i + 1) / len(self.in_paths) * 100
+            self.progress_signal.emit(int(percentage))
+
+        self.progress_signal.emit(-1)
+        self.progress_text_signal.emit(f"Finished all {len(self.in_paths)} PDFs")

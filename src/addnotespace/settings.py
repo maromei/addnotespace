@@ -28,6 +28,10 @@ INFO_DIALOGUE_UI_PATH = UI_FOLDER_PATH / os.environ.get(
     "INFO_DIALOGUE_UI_NAME", "info_dialogue.ui"
 )
 
+PROGRESS_DIALOGUE_UI_PATH = UI_FOLDER_PATH / os.environ.get(
+    "PROGRESS_DIALOGUE_UI_NAME", "progress_dialogue.ui"
+)
+
 FOLDER_ICON_PATH = UI_FOLDER_PATH / os.environ.get(
     "FOLDER_ICON_NAME", "folder_icon.png"
 )
