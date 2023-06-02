@@ -323,6 +323,9 @@ class MainWindow(QMainWindow):
         dump_defaults(default_values, settings.DEFAULT_PATH)
         self.write_defaults_to_fields()
 
+        message = InfoDialog("success", "Defaults were successfully saved.")
+        message.exec_()
+
     def setup_margin_form_input(self):
         """
         Sets up the Validators for the margin form inputs.
