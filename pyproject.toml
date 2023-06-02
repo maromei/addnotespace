@@ -32,39 +32,11 @@ Source = "https://github.com/maromei/addnotespace"
 [tool.hatch.version]
 path = "src/__about__.py"
 
-[tool.hatch.envs.default]
-dependencies = [
-  "pytest",
-  "pytest-cov",
-]
 [tool.hatch.envs.default.scripts]
-cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=addnotespace --cov=tests {args}"
-no-cov = "cov --no-cov {args}"
-
-[[tool.hatch.envs.test.matrix]]
-python = ["37", "38", "39", "310", "311"]
-
-[tool.coverage.run]
-branch = true
-parallel = true
-omit = [
-  "src/__about__.py",
-]
-
-[tool.coverage.report]
-exclude_lines = [
-  "no cov",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
-]
-
-[tool.hatch.envs.dev]
-
-[tool.hatch.envs.dev.scripts]
 run = "python src/main.py"
 run-bulk = "python src/bulk_run.py"
 
-[tool.hatch.envs.dev.env-vars]
+[tool.hatch.envs.default.env-vars]
 DOTENV_PATH = "env_files/dev.env"
 
 [tool.hatch.envs.style]
@@ -78,3 +50,11 @@ dependencies = [
 
 [tool.hatch.envs.style.scripts]
 precommit-install = "pre-commit install"
+
+[tool.hatch.envs.build]
+dependencies = [
+  "cx_freeze"
+]
+
+[tool.hatch.envs.build.scripts]
+build = "python setup.py build"
