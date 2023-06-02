@@ -11,7 +11,7 @@
 ## Overview
 
 Professors never leave enough space on their slides to take notes.
-This allows you to add white space to every side of each page in a pdf file.
+This tool allows you to add white space to every side of each page in a pdf file.
 
 This can be done in bulk, where you select an entire folder, or by selecting
 a single pdf file.
@@ -23,7 +23,8 @@ there is an additional `run_bulk.exe`, which uses your default values.
 
 Head to the [Releases page](https://github.com/maromei/addnotespace/releases)
 and download the latest `*.zip` file. The extracted content can be placed anywhere on
-your pc. For easy access create a shortcut for the `addnotespace.exe` and
+your pc. This tool functions as a standalone.
+For easy access create a shortcut for the `addnotespace.exe` and
 `run_bulk.exe`.
 
 ## License
