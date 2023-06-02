@@ -19,7 +19,7 @@ from PyQt5.QtCore import QSize, Qt, QThread, pyqtSignal
 
 from addnotespace import settings, pdf
 from addnotespace.defaults import NoteValues, load_defaults, dump_defaults
-from addnotespace.button_behaviour import run_bulk
+from addnotespace.button_behaviour import run_bulk, run_single
 
 
 logger = getLogger(__name__)
@@ -107,50 +107,28 @@ class MainWindow(QMainWindow):
         self.write_values_to_fields(values)
 
     def run_single(self):
+        """
+        Does a single run.
+        """
 
-        file_name = self.single_folder_line_edit.text()
-        file_name_empty = file_name == ""
-        file_name = Path(file_name).absolute()
+        values = self.create_note_values()
 
-        new_file_name = self.single_new_name_line_edit.text()
-        new_file_name_empty = new_file_name == ""
-        new_file_name = Path(new_file_name).absolute()
-
-        if file_name_empty or new_file_name_empty:
-            message = InfoDialog("error", "The filenames cannot be empty.")
-            message.exec_()
-            return
-
-        file_valid = file_name.exists() and str(file_name).endswith(".pdf")
-        if not file_valid:
-            message = InfoDialog("error", "The selected file does not exist anymore.")
-            message.exec_()
-            self.single_folder_line_edit.setText("")
-            return
-
-        if not new_file_name.parent.exists():
-            message = InfoDialog(
-                "error",
-                "The selected directory for the new file does not exist anymore.",
+        try:
+            values = run_single(values)
+        except Exception as e:
+            message = (
+                "Something went wrong when trying to do a single run.\n"
+                f"The following error message was raised:\n{e}"
             )
-            message.exec_()
-            self.single_new_name_line_edit.setText("")
-            return
+            logger.error(message)
+            info_dialogue = InfoDialog("error", message)
+            info_dialogue.exec_()
 
-        progress_dialogue = MarginProgressDialog(
-            [
-                str(file_name),
-            ],
-            [
-                str(new_file_name),
-            ],
-            int(self.margin_top_line_edit.text()) / 100,
-            int(self.margin_right_line_edit.text()) / 100,
-            int(self.margin_bot_line_edit.text()) / 100,
-            int(self.margin_left_line_edit.text()) / 100,
-        )
+        # If something went wrong with the values and it was caught,
+        # the run_bulk() function modifies / resets the values.
+        # That is why we apply them again.
 
-        progress_dialogue.exec_()
+        self.write_values_to_fields(values)
 
     def open_bulk_folder_select(self):
         """

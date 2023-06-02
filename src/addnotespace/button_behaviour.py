@@ -67,3 +67,50 @@ def run_bulk(values: NoteValues) -> NoteValues:
     progress_dialogue.exec_()
 
     return values
+
+
+def run_single(values: NoteValues) -> NoteValues:
+
+    file_name = values.single_file_folder
+    file_name_empty = file_name == ""
+    file_name = Path(file_name).absolute()
+
+    new_file_name = values.single_file_target_folder
+    new_file_name_empty = new_file_name == ""
+    new_file_name = Path(new_file_name).absolute()
+
+    if file_name_empty or new_file_name_empty:
+        message = InfoDialog("error", "The filenames cannot be empty.")
+        message.exec_()
+        return values
+
+    file_valid = file_name.exists() and str(file_name).endswith(".pdf")
+    if not file_valid:
+        message = InfoDialog("error", "The selected file does not exist anymore.")
+        message.exec_()
+        values.single_file_folder = ""
+        return values
+
+    if not new_file_name.parent.exists():
+        message = InfoDialog(
+            "error",
+            "The selected directory for the new file does not exist anymore.",
+        )
+        message.exec_()
+        values.single_file_target_folder = ""
+        return values
+
+    progress_dialogue = MarginProgressDialog(
+        [
+            str(file_name),
+        ],
+        [
+            str(new_file_name),
+        ],
+        int(values.margin_top) / 100,
+        int(values.margin_right) / 100,
+        int(values.margin_bot) / 100,
+        int(values.margin_left) / 100,
+    )
+
+    progress_dialogue.exec_()
