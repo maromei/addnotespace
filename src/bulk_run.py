@@ -2,7 +2,9 @@ import sys
 import logging.config
 
 from logger_config import LOGGING_CONFIG
+from initilialize import create_log_dir
 
+create_log_dir()
 logging.config.dictConfig(LOGGING_CONFIG)
 
 from PyQt5.QtWidgets import QApplication
