@@ -36,4 +36,6 @@ FOLDER_ICON_PATH = UI_FOLDER_PATH / os.environ.get(
     "FOLDER_ICON_NAME", "folder_icon.png"
 )
 
+APP_ICON_PATH = UI_FOLDER_PATH / os.environ.get("APP_ICON_NAME", "addnotespace.ico")
+
 DEFAULT_PATH = os.environ.get("DEFAULT_PATH", "defaults.json")

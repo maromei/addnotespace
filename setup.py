@@ -7,9 +7,12 @@ from cx_Freeze import setup, Executable
 from src.__about__ import __version__
 
 version = __version__
+
 build_name = f"addnotespace_v{version}_x86"
 build_path = f"build/{build_name}"
 build_zip = f"{build_path}.zip"
+
+icon_path = "ui_files/addnotespace.ico"
 
 if Path(build_path).exists():
     shutil.rmtree(build_path)
@@ -25,8 +28,10 @@ build_options = {
 base = "Win32GUI" if sys.platform == "win32" else None
 
 executables = [
-    Executable("src/main.py", base=base, icon="addnotespace.ico"),
-    Executable("src/bulk_run.py", base=base, icon="addnotespace.ico"),
+    Executable(
+        "src/main.py", base=base, icon=icon_path, target_name="addnotespace.exe"
+    ),
+    Executable("src/bulk_run.py", base=base, icon=icon_path),
 ]
 
 setup(

@@ -57,6 +57,9 @@ class MainWindow(QMainWindow):
         ### UI SETUP ###
         ################
 
+        print(settings.APP_ICON_PATH)
+        self.setWindowIcon(QIcon(str(settings.APP_ICON_PATH)))
+
         uic.loadUi(settings.MAIN_WINDOW_UI_PATH, self)
         self.setup_margin_form_input()
         self.setup_folder_button_icons(str(settings.FOLDER_ICON_PATH))
