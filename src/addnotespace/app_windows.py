@@ -19,6 +19,7 @@ from PyQt5.QtCore import QSize, Qt, QThread, pyqtSignal
 
 from addnotespace import settings, pdf
 from addnotespace.defaults import NoteValues, load_defaults, dump_defaults
+from addnotespace.button_behaviour import run_bulk
 
 
 logger = getLogger(__name__)
@@ -82,55 +83,28 @@ class MainWindow(QMainWindow):
         self.single_run_button.pressed.connect(self.run_single)
 
     def run_bulk(self):
+        """
+        Does a bulk run with the given values.
+        """
 
-        bulk_folder = self.bulk_folder_line_edit.text()
-        bulk_folder = Path(bulk_folder).absolute()
+        values = self.create_note_values()
 
-        if not bulk_folder.exists():
-            message = InfoDialog(
-                "error", "The bulk folder is no longer available. Please set it again."
+        try:
+            values = run_bulk(values)
+        except Exception as e:
+            message = (
+                "Something went wrong when trying to do a bulk run.\n"
+                f"The following error message was raised:\n{e}"
             )
-            message.exec_()
-            self.bulk_folder_line_edit.setText("")
-            return
+            logger.error(message)
+            info_dialogue = InfoDialog("error", message)
+            info_dialogue.exec_()
 
-        file_suffix = self.bulk_ending_line_edit.text()
-        if file_suffix == "":
-            message = InfoDialog("error", "The file ending can not be empty.")
-            message.exec_()
-            return
+        # If something went wrong with the values and it was caught,
+        # the run_bulk() function modifies / resets the values.
+        # That is why we apply them again.
 
-        file_list = []
-        out_files = []
-        for file in os.listdir(bulk_folder):
-
-            if not file.endswith(".pdf"):
-                continue
-
-            out_file_name = file.split(".")
-            out_file_name = ".".join(out_file_name[:-1])
-            out_file_name = f"{out_file_name}{file_suffix}.pdf"
-
-            file_list.append(str(bulk_folder / file))
-            out_files.append(str(bulk_folder / out_file_name))
-
-        if len(file_list) == 0:
-            message = InfoDialog(
-                "info", f"No PDF File was found in the directory: '{bulk_folder}'"
-            )
-            message.exec_()
-            return
-
-        progress_dialogue = MarginProgressDialog(
-            file_list,
-            out_files,
-            int(self.margin_top_line_edit.text()) / 100,
-            int(self.margin_right_line_edit.text()) / 100,
-            int(self.margin_bot_line_edit.text()) / 100,
-            int(self.margin_left_line_edit.text()) / 100,
-        )
-
-        progress_dialogue.exec_()
+        self.write_values_to_fields(values)
 
     def run_single(self):
 
@@ -291,7 +265,7 @@ class MainWindow(QMainWindow):
 
         self.defaults = load_defaults(settings.DEFAULT_PATH)
         self.validate_and_modify_defaults(self.defaults)
-        self.write_defaults_to_fields()
+        self.write_values_to_fields(self.defaults)
 
     def save_defaults(self):
         """
@@ -301,7 +275,7 @@ class MainWindow(QMainWindow):
         default_values = self.create_note_values()
         self.defaults = default_values
         dump_defaults(default_values, settings.DEFAULT_PATH)
-        self.write_defaults_to_fields()
+        self.write_values_to_fields(self.defaults)
 
         message = InfoDialog("success", "Defaults were successfully saved.")
         message.exec_()
@@ -372,25 +346,26 @@ class MainWindow(QMainWindow):
         self.single_new_name_button.setIcon(QIcon(icon_path))
         self.single_new_name_button.setIconSize(icon_size)
 
-    def write_defaults_to_fields(self):
+    def write_values_to_fields(self, values: NoteValues):
         """
-        Takes the :code:`self.defaults` and writes them to the corresponding
+        Takes the :code:`values` and writes them to the corresponding
         fields.
+
+        Args:
+            values (NoteValues): values to write to fields
         """
 
-        self.margin_top_line_edit.setText(str(self.defaults.margin_top))
-        self.margin_right_line_edit.setText(str(self.defaults.margin_right))
-        self.margin_bot_line_edit.setText(str(self.defaults.margin_bot))
-        self.margin_left_line_edit.setText(str(self.defaults.margin_left))
+        self.margin_top_line_edit.setText(str(values.margin_top))
+        self.margin_right_line_edit.setText(str(values.margin_right))
+        self.margin_bot_line_edit.setText(str(values.margin_bot))
+        self.margin_left_line_edit.setText(str(values.margin_left))
 
-        self.bulk_folder_line_edit.setText(self.defaults.bulk_folder)
-        self.bulk_ending_line_edit.setText(self.defaults.bulk_name_ending)
+        self.bulk_folder_line_edit.setText(values.bulk_folder)
+        self.bulk_ending_line_edit.setText(values.bulk_name_ending)
 
-        self.single_folder_line_edit.setPlaceholderText(
-            self.defaults.single_file_folder
-        )
+        self.single_folder_line_edit.setPlaceholderText(values.single_file_folder)
         self.single_new_name_line_edit.setPlaceholderText(
-            self.defaults.single_file_target_folder
+            values.single_file_target_folder
         )
 
 
