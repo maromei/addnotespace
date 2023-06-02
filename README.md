@@ -1,14 +1,10 @@
-# addnotespace
-
-[![PyPI - Version](https://img.shields.io/pypi/v/addnotespace.svg)](https://pypi.org/project/addnotespace)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/addnotespace.svg)](https://pypi.org/project/addnotespace)
-
------
+# AddNoteSpace
 
 **Table of Contents**
 
 - [Installation](#installation)
 - [License](#license)
+- [TODO](#todo)
 
 ## Installation
 
@@ -25,3 +21,5 @@ pip install addnotespace
 
 - app_windows.MainWindow.validate_and_modify_defaults return is never used
 - preview of space added
+- setup defaults.json, env and log directory if not present
+- implement update message
