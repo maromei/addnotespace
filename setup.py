@@ -25,8 +25,8 @@ build_options = {
 base = "Win32GUI" if sys.platform == "win32" else None
 
 executables = [
-    Executable("src/main.py", base=base),
-    Executable("src/bulk_run.py", base=base),
+    Executable("src/main.py", base=base, icon="addnotespace.ico"),
+    Executable("src/bulk_run.py", base=base, icon="addnotespace.ico"),
 ]
 
 setup(
