@@ -21,5 +21,4 @@ pip install addnotespace
 
 - app_windows.MainWindow.validate_and_modify_defaults return is never used
 - preview of space added
-- setup defaults.json, env and log directory if not present
 - implement update message

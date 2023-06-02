@@ -9,9 +9,12 @@ from src.__about__ import __version__
 version = __version__
 build_name = f"addnotespace_v{version}_x86"
 build_path = f"build/{build_name}"
+build_zip = f"{build_path}.zip"
 
 if Path(build_path).exists():
     shutil.rmtree(build_path)
+if Path(build_zip).exists():
+    os.remove(build_zip)
 
 build_options = {
     "packages": [],
