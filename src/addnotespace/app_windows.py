@@ -18,7 +18,7 @@ from PyQt5.QtGui import QIntValidator, QIcon
 from PyQt5.QtCore import QSize, Qt, QThread, pyqtSignal
 
 from addnotespace import settings, pdf
-from addnotespace.defaults import DefaultValues, load_defaults, dump_defaults
+from addnotespace.defaults import NoteValues, load_defaults, dump_defaults
 
 
 logger = getLogger(__name__)
@@ -26,7 +26,7 @@ logger = getLogger(__name__)
 
 class MainWindow(QMainWindow):
 
-    defaults: DefaultValues = None
+    defaults: NoteValues = None
 
     folder_icon_size = 30
 
@@ -255,13 +255,13 @@ class MainWindow(QMainWindow):
 
         return file_name
 
-    def validate_and_modify_defaults(self, defaults: DefaultValues) -> bool:
+    def validate_and_modify_defaults(self, defaults: NoteValues) -> bool:
         """
         Checks the paths in the default values and sets them to an empty string
         if the directory does not exist.
 
         Args:
-            defaults (DefaultValues):
+            defaults (NoteValues):
 
         Returns:
             bool: True if nothing was changed. False otherwise.
@@ -298,6 +298,23 @@ class MainWindow(QMainWindow):
         Reads all settings and dumps it into a the defaults file.
         """
 
+        default_values = self.create_note_values()
+        self.defaults = default_values
+        dump_defaults(default_values, settings.DEFAULT_PATH)
+        self.write_defaults_to_fields()
+
+        message = InfoDialog("success", "Defaults were successfully saved.")
+        message.exec_()
+
+    def create_note_values(self) -> NoteValues:
+        """
+        Creates a :py:class:`addnotespace.defaults.NoteValues` object
+        containing the settings currently entered in the GUI.
+
+        Returns:
+            NoteValues: The set of values
+        """
+
         single_file_folder = Path(self.single_folder_line_edit.text())
         single_file_folder = str(single_file_folder.parent.absolute())
 
@@ -307,7 +324,7 @@ class MainWindow(QMainWindow):
         bulk_folder = Path(self.bulk_folder_line_edit.text())
         bulk_folder = str(bulk_folder.absolute())
 
-        default_values = DefaultValues(
+        note_values = NoteValues(
             margin_top=int(self.margin_top_line_edit.text()),
             margin_right=int(self.margin_right_line_edit.text()),
             margin_bot=int(self.margin_bot_line_edit.text()),
@@ -318,13 +335,9 @@ class MainWindow(QMainWindow):
             single_file_target_folder=single_file_target_folder,
         )
 
-        self.validate_and_modify_defaults(default_values)
-        self.defaults = default_values
-        dump_defaults(default_values, settings.DEFAULT_PATH)
-        self.write_defaults_to_fields()
+        self.validate_and_modify_defaults(note_values)
 
-        message = InfoDialog("success", "Defaults were successfully saved.")
-        message.exec_()
+        return note_values
 
     def setup_margin_form_input(self):
         """
