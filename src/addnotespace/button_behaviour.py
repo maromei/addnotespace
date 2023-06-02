@@ -70,6 +70,15 @@ def run_bulk(values: NoteValues) -> NoteValues:
 
 
 def run_single(values: NoteValues) -> NoteValues:
+    """
+    Does a single run with the given values.
+
+    Args:
+        values (NoteValues): values for the run
+
+    Returns:
+        NoteValues: modified values in case somethign is wrong with the them
+    """
 
     file_name = values.single_file_folder
     file_name_empty = file_name == ""
