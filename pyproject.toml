@@ -62,6 +62,7 @@ exclude_lines = [
 
 [tool.hatch.envs.dev.scripts]
 run = "python src/main.py"
+run-bulk = "python src/bulk_run.py"
 
 [tool.hatch.envs.dev.env-vars]
 DOTENV_PATH = "env_files/dev.env"

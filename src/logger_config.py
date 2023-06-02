@@ -37,6 +37,7 @@ LOGGERS = {
     "addnotespace.style_loader": DEFAULT_LOGGER_CONFIG,
     "addnotespace.defaults": DEFAULT_LOGGER_CONFIG,
     "addnotespace.app_windows": DEFAULT_LOGGER_CONFIG,
+    "addnotespace.button_behaviour": DEFAULT_LOGGER_CONFIG,
 }
 
 
