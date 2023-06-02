@@ -57,7 +57,6 @@ class MainWindow(QMainWindow):
         ### UI SETUP ###
         ################
 
-        print(settings.APP_ICON_PATH)
         self.setWindowIcon(QIcon(str(settings.APP_ICON_PATH)))
 
         uic.loadUi(settings.MAIN_WINDOW_UI_PATH, self)
@@ -113,7 +112,7 @@ class MainWindow(QMainWindow):
         Does a single run.
         """
 
-        values = self.create_note_values()
+        values = self.create_note_values(use_single_folder_parents=False)
 
         try:
             values = run_single(values)
@@ -260,20 +259,32 @@ class MainWindow(QMainWindow):
         message = InfoDialog("success", "Defaults were successfully saved.")
         message.exec_()
 
-    def create_note_values(self) -> NoteValues:
+    def create_note_values(self, use_single_folder_parents: bool = True) -> NoteValues:
         """
         Creates a :py:class:`addnotespace.defaults.NoteValues` object
         containing the settings currently entered in the GUI.
+
+        Args:
+            use_single_folder_parents (bool): Defaults to True.
+                If True, only the folder in the single_folder_lines will
+                be used. If False, the entire fill will be added aswell.
 
         Returns:
             NoteValues: The set of values
         """
 
         single_file_folder = Path(self.single_folder_line_edit.text())
-        single_file_folder = str(single_file_folder.parent.absolute())
+        if use_single_folder_parents:
+            single_file_folder = str(single_file_folder.parent.absolute())
+        else:
+            single_file_folder = str(single_file_folder.absolute())
 
         single_file_target_folder = Path(self.single_new_name_line_edit.text())
-        single_file_target_folder = str(single_file_target_folder.parent.absolute())
+
+        if use_single_folder_parents:
+            single_file_target_folder = str(single_file_target_folder.parent.absolute())
+        else:
+            single_file_target_folder = str(single_file_target_folder.absolute())
 
         bulk_folder = Path(self.bulk_folder_line_edit.text())
         bulk_folder = str(bulk_folder.absolute())
@@ -453,6 +464,12 @@ def run_single(values: NoteValues) -> NoteValues:
         values.single_file_target_folder = ""
         return values
 
+    if not str(new_file_name).endswith(".pdf"):
+        message = InfoDialog("error", "The new name is invalid.")
+        message.exec_()
+        values.single_file_target_folder = ""
+        return values
+
     progress_dialogue = MarginProgressDialog(
         [
             str(file_name),
@@ -467,6 +484,8 @@ def run_single(values: NoteValues) -> NoteValues:
     )
 
     progress_dialogue.exec_()
+
+    return values
 
 
 class InfoDialog(QDialog):
