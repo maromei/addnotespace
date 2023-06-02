@@ -7,6 +7,6 @@ def create_log_dir():
     Creates the directory log if it does not exists yet.
     """
 
-    log_dir = Path(os.getcwd()) / "log"
+    log_dir = Path(os.getcwd()) / "logs"
     if not log_dir.exists():
         os.makedirs(log_dir)
