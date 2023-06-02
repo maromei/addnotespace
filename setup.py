@@ -1,14 +1,22 @@
+import os
 import sys
+import shutil
+from pathlib import Path
+
 from cx_Freeze import setup, Executable
 from src.__about__ import __version__
 
 version = __version__
 build_name = f"addnotespace_v{version}_x86"
+build_path = f"build/{build_name}"
+
+if Path(build_path).exists():
+    shutil.rmtree(build_path)
 
 build_options = {
     "packages": [],
     "excludes": ["GitPython"],
-    "build_exe": f"build/{build_name}",
+    "build_exe": build_path,
 }
 
 base = "Win32GUI" if sys.platform == "win32" else None
