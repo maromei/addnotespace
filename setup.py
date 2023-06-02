@@ -1,7 +1,7 @@
 import sys
 from cx_Freeze import setup, Executable
 
-build_options = {"packages": [], "exludes": []}
+build_options = {"packages": [], "exludes": ["GitPython"]}
 
 base = "Win32GUI" if sys.platform == "win32" else None
 

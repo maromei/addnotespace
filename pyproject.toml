@@ -4,9 +4,9 @@ build-backend = "hatchling.build"
 
 [project]
 name = "addnotespace"
-description = ''
+description = "Add whitespace around your pdf for note taking."
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 license = "MIT"
 keywords = []
 authors = [
@@ -53,7 +53,8 @@ precommit-install = "pre-commit install"
 
 [tool.hatch.envs.build]
 dependencies = [
-  "cx_freeze"
+  "cx_freeze",
+  "GitPython"
 ]
 
 [tool.hatch.envs.build.scripts]
