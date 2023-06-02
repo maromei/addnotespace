@@ -14,4 +14,4 @@ if latest_tag[0] == "v":
     latest_tag = latest_tag[1:]
 
 with open(VERSION_FILE, "w") as f:
-    f.write(f'__version__="{latest_tag}"')
+    f.write(f'__version__ = "{latest_tag}"')

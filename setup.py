@@ -1,5 +1,8 @@
 import sys
 from cx_Freeze import setup, Executable
+from src.__about__ import __version__
+
+version = __version__
 
 build_options = {"packages": [], "exludes": ["GitPython"]}
 
@@ -12,7 +15,7 @@ executables = [
 
 setup(
     name="addnotespace",
-    version="1",
+    version=version,
     description="Add whitespace to the sides of your notes.",
     options={"build_exe": build_options},
     executables=executables,

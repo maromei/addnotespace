@@ -58,4 +58,7 @@ dependencies = [
 ]
 
 [tool.hatch.envs.build.scripts]
-build = "python setup.py build"
+build = [
+  "python scripts write_version_to_file.py",
+  "python setup.py build"
+]
