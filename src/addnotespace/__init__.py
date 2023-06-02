@@ -20,4 +20,4 @@ if DOTENV_PATH is not None:
         logger.warning(f"Unable to find dotenv file at '{path}'")
 
 else:
-    logger.warning(f"'DOTENV_PATH' was not set in the environment.")
+    logger.info(f"'DOTENV_PATH' was not set in the environment.")
