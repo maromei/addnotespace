@@ -39,6 +39,8 @@ For easy access create a shortcut for the `addnotespace.exe` and
 - script like execution
 - linux install via pip
 - tooltip
+- hint for draggable
+- percent sign for mod numbers
 
 ## Standing Changes for Version 0.2.0
 
