@@ -691,12 +691,12 @@
   <customwidget>
    <class>DragLineEditSingle</class>
    <extends>QLineEdit</extends>
-   <header>addnotespace/app_windows.h</header>
+   <header>addnotespace/widgets.h</header>
   </customwidget>
   <customwidget>
    <class>DragLineEditBulk</class>
    <extends>QLineEdit</extends>
-   <header>addnotespace/app_windows.h</header>
+   <header>addnotespace/widgets.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
