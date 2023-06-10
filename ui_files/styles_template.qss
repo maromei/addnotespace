@@ -62,3 +62,8 @@ QProgressBar {
 QProgressBar::chunk {
     background-color: @polar-night-s4;
 }
+
+#bulk_drag_hint,
+#single_folder_drag_hint {
+    color: @polar-night-s4;
+}
