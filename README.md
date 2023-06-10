@@ -39,3 +39,9 @@ For easy access create a shortcut for the `addnotespace.exe` and
 - implement update message
 - separate run bulk/single logic from the error windows
 - whether to include single file names in the NoteValue dataclass is messy
+
+
+## Standing Changes for Version 0.2.0
+
+- Added message for new releases
+- If a file is selected for a single run, the new filename will be automatically set. It uses the same folder and file name with the bulk suffix. Should the suffix be empty, "_note" will be used.
