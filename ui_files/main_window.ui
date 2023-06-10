@@ -62,9 +62,9 @@
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QLineEdit" name="bulk_folder_line_edit">
+                 <widget class="DragLineEditBulk" name="bulk_folder_line_edit">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -225,9 +225,9 @@
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QLineEdit" name="single_folder_line_edit">
+                 <widget class="DragLineEditSingle" name="single_folder_line_edit">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -687,6 +687,18 @@
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DragLineEditSingle</class>
+   <extends>QLineEdit</extends>
+   <header>addnotespace/app_windows.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DragLineEditBulk</class>
+   <extends>QLineEdit</extends>
+   <header>addnotespace/app_windows.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

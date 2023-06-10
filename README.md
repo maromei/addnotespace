@@ -36,7 +36,6 @@ For easy access create a shortcut for the `addnotespace.exe` and
 
 - preview of space added
 - whether to include single file names in the NoteValue dataclass is messy
-- drag and drop file
 - script like execution
 - linux install via pip
 - tooltip

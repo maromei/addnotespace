@@ -19,6 +19,7 @@ from PyQt5.QtCore import QSize, Qt, QThread, pyqtSignal
 
 from addnotespace import settings, pdf, updates
 from addnotespace.defaults import NoteValues, load_defaults, dump_defaults
+from addnotespace.widgets import DragLineEditBulk, DragLineEditSingle
 
 
 logger = getLogger(__name__)
@@ -42,9 +43,9 @@ class MainWindow(QMainWindow):
     single_folder_button: QPushButton = None
     single_new_name_button: QPushButton = None
 
-    bulk_folder_line_edit: QLineEdit = None
+    bulk_folder_line_edit: DragLineEditBulk = None
     bulk_ending_line_edit: QLineEdit = None
-    single_folder_line_edit: QLineEdit = None
+    single_folder_line_edit: DragLineEditSingle = None
     single_new_name_line_edit: QLineEdit = None
 
     default_loader_load_button: QPushButton = None
@@ -87,6 +88,8 @@ class MainWindow(QMainWindow):
 
         self.bulk_run_button.pressed.connect(self.run_bulk)
         self.single_run_button.pressed.connect(self.run_single)
+
+        self.single_folder_line_edit.main_window = self
 
     #####################
     ### RUN FUNCTIONS ###
@@ -181,6 +184,28 @@ class MainWindow(QMainWindow):
 
         self.write_values_to_fields(values)
 
+    def auto_set_single_new_file(self, single_path: str):
+        """
+        Automatically sets the new file name for a single path.
+        It uses the singel path + the bulk suffix.
+
+        If the bulk suffix is empty, :code:`_notes` will be used instead.
+
+        Args:
+            single_path (str): The selected single file path.
+        """
+
+        file_suffix = self.bulk_ending_line_edit.text().strip()
+        if file_suffix == "":
+            file_suffix = "_notes"
+
+        out_file_name = Path(single_path).absolute()
+        out_file_name = str(out_file_name).split(".")
+        out_file_name = ".".join(out_file_name[:-1])
+        out_file_name = f"{out_file_name}{file_suffix}.pdf"
+
+        self.single_new_name_line_edit.setText(out_file_name)
+
     ###################
     ### OPEN DIOLOG ###
     ###################
@@ -219,17 +244,7 @@ class MainWindow(QMainWindow):
             return
 
         self.single_folder_line_edit.setText(file_name)
-
-        file_suffix = self.bulk_ending_line_edit.text().strip()
-        if file_suffix == "":
-            file_suffix = "_notes"
-
-        out_file_name = Path(file_name).absolute()
-        out_file_name = str(out_file_name).split(".")
-        out_file_name = ".".join(out_file_name[:-1])
-        out_file_name = f"{out_file_name}{file_suffix}.pdf"
-
-        self.single_new_name_line_edit.setText(out_file_name)
+        self.auto_set_single_new_file(file_name)
 
     def open_new_file_location_select(self):
         """
