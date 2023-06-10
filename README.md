@@ -34,12 +34,9 @@ For easy access create a shortcut for the `addnotespace.exe` and
 
 ## TODO:
 
-- app_windows.MainWindow.validate_and_modify_defaults return is never used
 - preview of space added
-- implement update message
-- separate run bulk/single logic from the error windows
 - whether to include single file names in the NoteValue dataclass is messy
-
+- drag and drop file
 
 ## Standing Changes for Version 0.2.0
 
