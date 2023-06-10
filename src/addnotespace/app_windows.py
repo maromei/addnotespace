@@ -66,6 +66,8 @@ class MainWindow(QMainWindow):
         self.setup_margin_form_input()
         self.setup_folder_button_icons(str(settings.FOLDER_ICON_PATH))
 
+        self.setWindowTitle(f"AddNoteSpace v{settings.VERSION}")
+
         ################
         ### DEFAULTS ###
         ################

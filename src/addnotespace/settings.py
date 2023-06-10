@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 from logging import getLogger
 
+from __about__ import __version__
+
 
 logger = getLogger(__name__)
 
@@ -39,3 +41,5 @@ FOLDER_ICON_PATH = UI_FOLDER_PATH / os.environ.get(
 APP_ICON_PATH = UI_FOLDER_PATH / os.environ.get("APP_ICON_NAME", "addnotespace.ico")
 
 DEFAULT_PATH = os.environ.get("DEFAULT_PATH", "defaults.json")
+
+VERSION = __version__
