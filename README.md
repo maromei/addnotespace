@@ -37,6 +37,7 @@ For easy access create a shortcut for the `addnotespace.exe` and
 - preview of space added
 - whether to include single file names in the NoteValue dataclass is messy
 - drag and drop file
+- automated dev versioning
 
 ## Standing Changes for Version 0.2.0
 
