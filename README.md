@@ -38,6 +38,8 @@ For easy access create a shortcut for the `addnotespace.exe` and
 - whether to include single file names in the NoteValue dataclass is messy
 - drag and drop file
 - automated dev versioning
+- script like execution
+- linux install via pip
 
 ## Standing Changes for Version 0.2.0
 
