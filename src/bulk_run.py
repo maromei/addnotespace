@@ -10,8 +10,7 @@ logging.config.dictConfig(LOGGING_CONFIG)
 from PyQt5.QtWidgets import QApplication
 
 from addnotespace import settings, style_loader
-from addnotespace.defaults import load_defaults
-from addnotespace.app_windows import run_bulk, InfoDialog
+from addnotespace.app_windows import InfoDialog, MainWindow
 
 logger = logging.getLogger(__name__)
 
@@ -20,10 +19,11 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     style_loader.load_styles(app, settings.STYLE_SHEET_PATH)
 
-    values = load_defaults(settings.DEFAULT_PATH)
+    main_window = MainWindow()
+
     try:
         # The run_bulk function creates the window
-        values = run_bulk(values)
+        main_window.run_bulk()
     except Exception as e:
         message = (
             "Something went wrong when trying to do a bulk run.\n"

@@ -1,7 +1,7 @@
 import os
-import sys
 from pathlib import Path
 from logging import getLogger
+from typing import Union
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import (
@@ -83,6 +83,10 @@ class MainWindow(QMainWindow):
         self.bulk_run_button.pressed.connect(self.run_bulk)
         self.single_run_button.pressed.connect(self.run_single)
 
+    #####################
+    ### RUN FUNCTIONS ###
+    #####################
+
     def run_bulk(self):
         """
         Does a bulk run with the given values.
@@ -90,8 +94,15 @@ class MainWindow(QMainWindow):
 
         values = self.create_note_values()
 
+        errors = self.clean_and_validate_bulk_run(values)
+        for error in errors:
+            error.exec_()
+
+        if len(errors) > 0:
+            return
+
         try:
-            values = run_bulk(values)
+            run_bulk(values)
         except Exception as e:
             message = (
                 "Something went wrong when trying to do a bulk run.\n"
@@ -114,8 +125,15 @@ class MainWindow(QMainWindow):
 
         values = self.create_note_values(use_single_folder_parents=False)
 
+        errors = self.clean_and_validate_single_run(values)
+        for error in errors:
+            error.exec_()
+
+        if len(errors) > 0:
+            return
+
         try:
-            values = run_single(values)
+            run_single(values)
         except Exception as e:
             message = (
                 "Something went wrong when trying to do a single run.\n"
@@ -130,6 +148,10 @@ class MainWindow(QMainWindow):
         # That is why we apply them again.
 
         self.write_values_to_fields(values)
+
+    ###################
+    ### OPEN DIOLOG ###
+    ###################
 
     def open_bulk_folder_select(self):
         """
@@ -151,6 +173,10 @@ class MainWindow(QMainWindow):
         Opens a :code:`QFileDialog` to select a single PDF file.
         The full path to that file is put into the
         :code:`single_folder_line_edit` field.
+
+        The new file name will also be set to
+        :code:`single_folder_new_name_line_edit`. The selected path
+        will be chosen + the bulk file suffix.
         """
 
         file_name, _ = QFileDialog.getOpenFileName(
@@ -161,6 +187,17 @@ class MainWindow(QMainWindow):
             return
 
         self.single_folder_line_edit.setText(file_name)
+
+        file_suffix = self.bulk_ending_line_edit.text().strip()
+        if file_suffix == "":
+            file_suffix = "_notes"
+
+        out_file_name = Path(file_name).absolute()
+        out_file_name = str(out_file_name).split(".")
+        out_file_name = ".".join(out_file_name[:-1])
+        out_file_name = f"{out_file_name}{file_suffix}.pdf"
+
+        self.single_new_name_line_edit.setText(out_file_name)
 
     def open_new_file_location_select(self):
         """
@@ -178,35 +215,11 @@ class MainWindow(QMainWindow):
         if file_name == "":
             return
 
-        file_name = self.validate_and_modify_new_file_name(file_name)
         self.single_new_name_line_edit.setText(file_name)
 
-    def validate_and_modify_new_file_name(self, file_name: str) -> str:
-        """
-        Checks whether the new file name ends with :code:`.pdf` and
-        sets the file ending accordingly.
-
-        Args:
-            file_name (str):
-
-        Returns:
-            str: modified file name
-
-        Raises:
-            ValueError: If the parent directory of the file does not exist.
-        """
-
-        if not file_name.endswith(".pdf"):
-            file_name = f"{file_name}.pdf"
-
-        parent_dir = Path(file_name).parent
-        if not parent_dir.exists():
-            raise ValueError(
-                f"Could not save the file '{Path(file_name).absolute()}'.\n"
-                f"The directory '{parent_dir}' does not exist."
-            )
-
-        return file_name
+    ##################
+    ### VALIDATION ###
+    ##################
 
     def validate_and_modify_defaults(self, defaults: NoteValues) -> bool:
         """
@@ -221,6 +234,7 @@ class MainWindow(QMainWindow):
         """
 
         all_good = True
+        errors = []
 
         if not Path(defaults.single_file_folder).exists():
             defaults.single_file_folder = ""
@@ -235,6 +249,123 @@ class MainWindow(QMainWindow):
             all_good = False
 
         return all_good
+
+    def validate_margin_values(self, values: NoteValues) -> Union["InfoDialog", None]:
+        """
+        Checks whether the margin values are integers greater than 0.
+
+        Args:
+            values (NoteValues): Values to check
+
+        Returns:
+            InfoDialog or None: If :code:`None` no errors where found.
+                Otherwise the InfoDialog with the error message is returned.
+        """
+
+        def is_correct(val: int) -> bool:
+            return val >= 0 and type(val) is int
+
+        is_good = is_correct(values.margin_top)
+        is_good = is_good and is_correct(values.margin_right)
+        is_good = is_good and is_correct(values.margin_bot)
+        is_good = is_good and is_correct(values.margin_left)
+
+        if is_good:
+            return
+
+        message = (
+            "Please check the validity of the margin value. "
+            "They need to be integers greater than 0."
+        )
+
+        error = InfoDialog("error", message)
+        return error
+
+    def clean_and_validate_single_run(
+        self, values: NoteValues
+    ) -> list["InfoDialog"] | None:
+        """
+        Given a set of :code:`NoteValues` for a single run, the values
+        will be cleaned inplace and potential errors will be returned.
+
+        Args:
+            values (NoteValues): Values to be checked.
+
+        Returns:
+            list[InfoDialog]: A list of errors.
+        """
+
+        errors = []
+
+        margin_error = self.validate_margin_values(values)
+        if margin_error is not None:
+            errors.append(margin_error)
+
+        file_name = values.single_file_folder
+        new_file_name = values.single_file_target_folder
+
+        # is curr pdf?
+        if not file_name.endswith(".pdf"):
+            message = f"The selected file '{file_name}' is not a valid PDF file."
+            errors.append(InfoDialog("error", message))
+
+        # does curr exist?
+        if not Path(file_name).exists():
+            message = f"The file '{file_name}' does not exist."
+            errors.append(InfoDialog("error", message))
+
+        # is name pdf?
+        if not new_file_name.endswith(".pdf"):
+            new_file_name += ".pdf"
+            values.single_file_target_folder = new_file_name
+
+        # does new folder exist?
+        if not Path(new_file_name).parent.exists():
+            message = "The folder for the new file does not exist."
+            errors.append(InfoDialog("error", message))
+
+        return errors
+
+    def clean_and_validate_bulk_run(
+        self, values: NoteValues
+    ) -> list["InfoDialog"] | None:
+        """
+        Given a set of :code:`NoteValues` for a bulk run, the values
+        will be cleaned inplace and potential errors will be returned.
+
+        Args:
+            values (NoteValues): Values to be checked.
+
+        Returns:
+            list[InfoDialog]: A list of errors.
+        """
+
+        errors = []
+
+        margin_error = self.validate_margin_values(values)
+        if margin_error is not None:
+            errors.append(margin_error)
+
+        folder = values.bulk_folder
+        ending = values.bulk_name_ending
+
+        # does folder exist?
+        if not Path(folder).exists():
+            message = f"The bulk folder '{folder}' does not exist."
+            errors.append(InfoDialog("error", message))
+
+        # is ending not empty?
+        ending = ending.strip()
+        values.bulk_name_ending = ending
+        if ending == "":
+            message = f"The bulk file ending cannot be empty."
+            errors.append(InfoDialog("error", message))
+
+        return errors
+
+    ##########################
+    ### DEFAULTS - NOTESET ###
+    ##########################
 
     def load_defaults(self):
         """
@@ -304,6 +435,32 @@ class MainWindow(QMainWindow):
 
         return note_values
 
+    def write_values_to_fields(self, values: NoteValues):
+        """
+        Takes the :code:`values` and writes them to the corresponding
+        fields.
+
+        Args:
+            values (NoteValues): values to write to fields
+        """
+
+        self.margin_top_line_edit.setText(str(values.margin_top))
+        self.margin_right_line_edit.setText(str(values.margin_right))
+        self.margin_bot_line_edit.setText(str(values.margin_bot))
+        self.margin_left_line_edit.setText(str(values.margin_left))
+
+        self.bulk_folder_line_edit.setText(values.bulk_folder)
+        self.bulk_ending_line_edit.setText(values.bulk_name_ending)
+
+        self.single_folder_line_edit.setPlaceholderText(values.single_file_folder)
+        self.single_new_name_line_edit.setPlaceholderText(
+            values.single_file_target_folder
+        )
+
+    ####################
+    ### VISUAL SETUP ###
+    ####################
+
     def setup_margin_form_input(self):
         """
         Sets up the Validators for the margin form inputs.
@@ -337,57 +494,18 @@ class MainWindow(QMainWindow):
         self.single_new_name_button.setIcon(QIcon(icon_path))
         self.single_new_name_button.setIconSize(icon_size)
 
-    def write_values_to_fields(self, values: NoteValues):
-        """
-        Takes the :code:`values` and writes them to the corresponding
-        fields.
 
-        Args:
-            values (NoteValues): values to write to fields
-        """
-
-        self.margin_top_line_edit.setText(str(values.margin_top))
-        self.margin_right_line_edit.setText(str(values.margin_right))
-        self.margin_bot_line_edit.setText(str(values.margin_bot))
-        self.margin_left_line_edit.setText(str(values.margin_left))
-
-        self.bulk_folder_line_edit.setText(values.bulk_folder)
-        self.bulk_ending_line_edit.setText(values.bulk_name_ending)
-
-        self.single_folder_line_edit.setPlaceholderText(values.single_file_folder)
-        self.single_new_name_line_edit.setPlaceholderText(
-            values.single_file_target_folder
-        )
-
-
-def run_bulk(values: NoteValues) -> NoteValues:
+def run_bulk(values: NoteValues):
     """
     This function does a bulk run with the given values.
+    If no PDF FIle was found, the corresponding error will be displayed.
 
     Args:
         values (NoteValues): The configuration for the bulk run
-
-    Returns:
-        NoteValues: Should some error be caught, or something is wrong with
-            the values, then they will be modified. The modified values are
-            returned.
     """
 
     bulk_folder = Path(values.bulk_folder).absolute()
-
-    if not bulk_folder.exists():
-        message = InfoDialog(
-            "error", "The bulk folder is no longer available. Please set it again."
-        )
-        message.exec_()
-        values.bulk_folder = ""
-        return values
-
     file_suffix = values.bulk_name_ending
-    if file_suffix == "":
-        message = InfoDialog("error", "The file ending can not be empty.")
-        message.exec_()
-        return values
 
     file_list = []
     out_files = []
@@ -408,7 +526,6 @@ def run_bulk(values: NoteValues) -> NoteValues:
             "info", f"No PDF File was found in the directory: '{bulk_folder}'"
         )
         message.exec_()
-        return values
 
     progress_dialogue = MarginProgressDialog(
         file_list,
@@ -421,54 +538,17 @@ def run_bulk(values: NoteValues) -> NoteValues:
 
     progress_dialogue.exec_()
 
-    return values
 
-
-def run_single(values: NoteValues) -> NoteValues:
+def run_single(values: NoteValues):
     """
     Does a single run with the given values.
 
     Args:
         values (NoteValues): values for the run
-
-    Returns:
-        NoteValues: modified values in case somethign is wrong with the them
     """
 
-    file_name = values.single_file_folder
-    file_name_empty = file_name == ""
-    file_name = Path(file_name).absolute()
-
-    new_file_name = values.single_file_target_folder
-    new_file_name_empty = new_file_name == ""
-    new_file_name = Path(new_file_name).absolute()
-
-    if file_name_empty or new_file_name_empty:
-        message = InfoDialog("error", "The filenames cannot be empty.")
-        message.exec_()
-        return values
-
-    file_valid = file_name.exists() and str(file_name).endswith(".pdf")
-    if not file_valid:
-        message = InfoDialog("error", "The selected file does not exist anymore.")
-        message.exec_()
-        values.single_file_folder = ""
-        return values
-
-    if not new_file_name.parent.exists():
-        message = InfoDialog(
-            "error",
-            "The selected directory for the new file does not exist anymore.",
-        )
-        message.exec_()
-        values.single_file_target_folder = ""
-        return values
-
-    if not str(new_file_name).endswith(".pdf"):
-        message = InfoDialog("error", "The new name is invalid.")
-        message.exec_()
-        values.single_file_target_folder = ""
-        return values
+    file_name = Path(values.single_file_folder).absolute()
+    new_file_name = Path(values.single_file_target_folder).absolute()
 
     progress_dialogue = MarginProgressDialog(
         [
@@ -484,8 +564,6 @@ def run_single(values: NoteValues) -> NoteValues:
     )
 
     progress_dialogue.exec_()
-
-    return values
 
 
 class InfoDialog(QDialog):
