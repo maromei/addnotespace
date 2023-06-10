@@ -25,6 +25,9 @@ logger = getLogger(__name__)
 
 
 class MainWindow(QMainWindow):
+    """
+    The main window containing all the default functionality.
+    """
 
     defaults: NoteValues = None
 
@@ -567,19 +570,37 @@ def run_single(values: NoteValues):
 
 
 class InfoDialog(QDialog):
+    """
+    A Dialog displaying simple messages.
+    These can have 3 different types.
+    "info", "warning" and "error".
 
+    This Dialog has an additional property :code:`message_type` which can
+    be used for custom syling in qss files.
+    """
+
+    #: Display map for each message type, to how that
+    #: type will be displayed.
     MESSAGE_TYPE_DISPLAY_MAP = {
         "info": "Info:",
         "warning": "Warning:",
         "error": "ERROR:",
     }
 
-    error_type: QLabel = None
-    error_text: QLabel = None
+    error_type: QLabel = None  #:
+    error_text: QLabel = None  #:
 
-    ok_button: QPushButton = None
+    ok_button: QPushButton = None  #:
 
     def __init__(self, message_type: str, message: str, *args, **kwargs):
+        """
+        Creates A message dialog.
+
+        Args:
+            message_type (str): Can be either "info", "warning" or "error"
+            message (str):
+        """
+
         super(InfoDialog, self).__init__(*args, **kwargs)
 
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
@@ -605,10 +626,14 @@ class InfoDialog(QDialog):
 
 
 class MarginProgressDialog(QDialog):
+    """
+    The Dialog dispalying the progress of
+    working on multiple PDF files.
+    """
 
-    finish_button: QPushButton
-    progress_bar: QProgressBar
-    progress_text: QLabel
+    finish_button: QPushButton  #:
+    progress_bar: QProgressBar  #:
+    progress_text: QLabel  #:
 
     def __init__(
         self,
@@ -621,6 +646,19 @@ class MarginProgressDialog(QDialog):
         *args,
         **kwargs,
     ):
+        """
+        Create a progress dialog while for working on the files.
+        The process will automatically be started once this classes
+        :code:`exec_()` function is started.
+
+        Args:
+            in_paths (list[str]):
+            out_paths (list[str]):
+            top_mod (float): top mod as fraction
+            right_mod (float): right mod as fraction
+            bot_mod (float): bot mod as fraction
+            left_mod (float): left mod as fraction
+        """
         super(MarginProgressDialog, self).__init__(*args, **kwargs)
 
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
@@ -637,6 +675,13 @@ class MarginProgressDialog(QDialog):
         self.margin_thread.start()
 
     def update_progress_bar(self, progress_value: int):
+        """
+        Updates the progress bar. If the progress_value hits 100, then
+        the process is finished.
+
+        Args:
+            progress_value (int):
+        """
 
         if progress_value == -1:
             progress_value = 100
@@ -645,18 +690,33 @@ class MarginProgressDialog(QDialog):
         self.progress_bar.setValue(progress_value)
 
     def update_working_on_text(self, display_text: str):
+        """
+        Sets the progress value to display.
+
+        Args:
+            display_text (str):
+        """
 
         self.progress_text.setText(display_text)
 
     def finish(self):
+        """
+        Enables Close button and finishes processes.
+        """
 
         self.finish_button.setText("Close")
         self.finish_button.setEnabled(True)
 
 
 class AddMarginThread(QThread):
+    """
+    A Thread for working multiple PDF files.
+    """
 
+    #: signal for transmitting percentage of progress
     progress_signal = pyqtSignal(int)
+
+    #: Sends signal of which PDF it is working on
     progress_text_signal = pyqtSignal(str)
 
     def __init__(
@@ -670,6 +730,17 @@ class AddMarginThread(QThread):
         *args,
         **kwargs,
     ):
+        """
+        Thread for adding space on given PDF files.
+
+        Args:
+            in_paths (list[str]):
+            out_paths (list[str]):
+            top_mod (float): top mod as fraction
+            right_mod (float): right mod as fraction
+            bot_mod (float): bot mod as fraction
+            left_mod (float): left mod as fraction
+        """
         super(AddMarginThread, self).__init__(*args, **kwargs)
 
         self.in_paths = in_paths
@@ -680,6 +751,13 @@ class AddMarginThread(QThread):
         self.left_mod = left_mod
 
     def run(self):
+        """
+        Runs adding space on multiple pdf files.
+
+        Sends signals with :code:`progress_signal` and
+        :code:`progress_text_signal`.
+        The :code:`progress_signal` will send -1 if the process is finished.
+        """
 
         for i in range(len(self.in_paths)):
 
