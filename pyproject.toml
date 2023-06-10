@@ -62,3 +62,4 @@ build = [
   "python setup.py build",
   "powershell ./scripts/post_build_cleanup.ps1"
 ]
+write_version = "python scripts/write_version_to_file.py"
