@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QIntValidator, QIcon
 from PyQt5.QtCore import QSize, Qt, QThread, pyqtSignal
 
-from addnotespace import settings, pdf
+from addnotespace import settings, pdf, updates
 from addnotespace.defaults import NoteValues, load_defaults, dump_defaults
 
 
@@ -91,6 +91,33 @@ class MainWindow(QMainWindow):
     #####################
     ### RUN FUNCTIONS ###
     #####################
+
+    def show(self, *args, **kwargs):
+        """
+        Overrides the default :code:`show()` method to check for
+        a new version and display a dialog for it.
+        """
+
+        super(MainWindow, self).show(*args, **kwargs)
+
+        if not updates.is_new_version_available():
+            return
+
+        new_version = updates.get_latest_release_version()
+
+        # The color for the link needs to be hard coded since
+        # there is currently no way to set it via qss files.
+
+        link = updates.get_latest_link()
+        link = f'<a href="{link}" style="color: #eceff4;">{link}</a>'
+
+        message = (
+            f"Version {new_version} is available!<br>"
+            "Download the new version at:<br><br>"
+            f"{link}"
+        )
+        dialog = InfoDialog("info", message, enable_rich_text=True)
+        dialog.exec_()
 
     def run_bulk(self):
         """
@@ -593,13 +620,21 @@ class InfoDialog(QDialog):
 
     ok_button: QPushButton = None  #:
 
-    def __init__(self, message_type: str, message: str, *args, **kwargs):
+    def __init__(
+        self,
+        message_type: str,
+        message: str,
+        enable_rich_text: bool = False,
+        *args,
+        **kwargs,
+    ):
         """
         Creates A message dialog.
 
         Args:
             message_type (str): Can be either "info", "warning" or "error"
             message (str):
+            enable_rich_text (bool): Whether or not to enable rich text formatting
         """
 
         super(InfoDialog, self).__init__(*args, **kwargs)
@@ -624,6 +659,9 @@ class InfoDialog(QDialog):
 
         layout: QLayout = self.layout()
         layout.setSizeConstraint(QLayout.SetFixedSize)
+
+        if enable_rich_text:
+            self.error_text.setTextFormat(Qt.RichText)
 
 
 class MarginProgressDialog(QDialog):

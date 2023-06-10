@@ -19,7 +19,8 @@ classifiers = [
 dependencies = [
   "python-dotenv",
   "pyqt5",
-  "PyPDF2"
+  "PyPDF2",
+  "requests"
 ]
 dynamic = ["version"]
 

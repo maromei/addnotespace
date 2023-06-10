@@ -43,3 +43,5 @@ APP_ICON_PATH = UI_FOLDER_PATH / os.environ.get("APP_ICON_NAME", "addnotespace.i
 DEFAULT_PATH = os.environ.get("DEFAULT_PATH", "defaults.json")
 
 VERSION = __version__
+
+REPOSITORY_NAME = "maromei/addnotespace"

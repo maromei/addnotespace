@@ -38,5 +38,4 @@ For easy access create a shortcut for the `addnotespace.exe` and
 - preview of space added
 - implement update message
 - separate run bulk/single logic from the error windows
-- docstrings for info windows needed
 - whether to include single file names in the NoteValue dataclass is messy
