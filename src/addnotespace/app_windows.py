@@ -43,9 +43,9 @@ class MainWindow(QMainWindow):
     single_folder_button: QPushButton = None
     single_new_name_button: QPushButton = None
 
-    bulk_folder_line_edit: DragLineEditBulk = None
+    bulk_folder_line_edit: "DragLineEditBulk" = None
     bulk_ending_line_edit: QLineEdit = None
-    single_folder_line_edit: DragLineEditSingle = None
+    single_folder_line_edit: "DragLineEditSingle" = None
     single_new_name_line_edit: QLineEdit = None
 
     default_loader_load_button: QPushButton = None

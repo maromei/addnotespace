@@ -1,11 +1,17 @@
 from pathlib import Path
 from logging import getLogger
+from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtGui import QDropEvent
 from PyQt5.QtCore import QUrl
 
-from addnotespace.app_windows import MainWindow
+# The import is only used for a type hint.
+# However, this already triggers a circular import.
+# For this the import should only be done if tools like mypy are TYPE_CHECKING.
+# It will be False at run-time.
+if TYPE_CHECKING:
+    from addnotespace.app_windows import MainWindow
 
 
 logger = getLogger(__name__)
@@ -74,7 +80,7 @@ class DragLineEditSingle(DragLineEdit):
     A drag line edit specifically for the single run.
     """
 
-    main_window: MainWindow = None  #: reference to the main window
+    main_window: "MainWindow" = None  #: reference to the main window
 
     def dropEvent(self, event: QDropEvent):
         """
@@ -88,7 +94,6 @@ class DragLineEditSingle(DragLineEdit):
         """
 
         file_path: QUrl = self.get_drop_file_path(event)
-        print(type(event))
         self.setText(file_path)
 
         if self.main_window is not None:
