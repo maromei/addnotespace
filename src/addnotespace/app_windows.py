@@ -214,10 +214,20 @@ class MainWindow(QMainWindow):
         """
         Opens a :code:`QFileDialog` to select a directory for the bulk run
         directory.
+
+        If the bulk folder input has something in it, then this will be
+        the directory where the dialog starts in. Otherwise the
+        default will be used.
         """
 
+        open_folder = self.defaults.bulk_folder
+
+        current_bulk_input = self.bulk_folder_line_edit.text()
+        if current_bulk_input != "":
+            open_folder = current_bulk_input
+
         dir_name = QFileDialog.getExistingDirectory(
-            self, "Select Bulk Directory", self.defaults.bulk_folder
+            self, "Select Bulk Directory", open_folder
         )
 
         if dir_name == "":
@@ -234,10 +244,20 @@ class MainWindow(QMainWindow):
         The new file name will also be set to
         :code:`single_folder_new_name_line_edit`. The selected path
         will be chosen + the bulk file suffix.
+
+        The folder will open in the location of the file which is currently
+        in the line edit. If the line edit is empty, the default
+        folder will be used.
         """
 
+        open_folder = self.defaults.single_file_folder
+
+        current_input = self.single_folder_line_edit.text()
+        if current_input != "":
+            open_folder = str(Path(current_input).parent)
+
         file_name, _ = QFileDialog.getOpenFileName(
-            self, "Select File", self.defaults.single_file_folder, "PDFs (*.pdf)"
+            self, "Select File", open_folder, "PDFs (*.pdf)"
         )
 
         if file_name == "":
@@ -252,10 +272,19 @@ class MainWindow(QMainWindow):
         new file.
         """
 
+        open_folder = self.defaults.single_file_target_folder
+
+        current_input = self.single_folder_line_edit.text()
+        current_new_name_input = self.single_new_name_line_edit.text()
+        if current_new_name_input != "":
+            open_folder = str(Path(current_new_name_input).parent)
+        elif current_input != "":
+            open_folder = str(Path(current_input).parent)
+
         file_name, _ = QFileDialog.getSaveFileName(
             self,
             "Set new File Name",
-            self.defaults.single_file_target_folder,
+            open_folder,
             "PDFs (*.pdf)",
         )
 
