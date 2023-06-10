@@ -237,7 +237,6 @@ class MainWindow(QMainWindow):
         """
 
         all_good = True
-        errors = []
 
         if not Path(defaults.single_file_folder).exists():
             defaults.single_file_folder = ""
