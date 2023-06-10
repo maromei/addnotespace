@@ -44,4 +44,4 @@ DEFAULT_PATH = os.environ.get("DEFAULT_PATH", "defaults.json")
 
 VERSION = __version__
 
-REPOSITORY_NAME = "maromei/addnotespace"
+REPOSITORY_NAME = os.environ.get("REPOSITORY_NAME", "maromei/addnotespace")
