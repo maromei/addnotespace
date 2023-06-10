@@ -41,8 +41,10 @@ For easy access create a shortcut for the `addnotespace.exe` and
 - tooltip
 - hint for draggable
 - percent sign for mod numbers
+- open folder if there is something in the line
 
 ## Standing Changes for Version 0.2.0
 
 - Added message for new releases
 - If a file is selected for a single run, the new filename will be automatically set. It uses the same folder and file name with the bulk suffix. Should the suffix be empty, "_note" will be used.
+- Added the ability to drag files and folders to the bulk folder and single file input.
