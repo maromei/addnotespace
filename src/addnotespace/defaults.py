@@ -24,6 +24,8 @@ class NoteValues:
     single_file_folder: str = ""  #:
     single_file_target_folder: str = ""  #:
 
+    preview_sketch_ratio: str = ""  #:
+
 
 def load_defaults(file_path: str | Path) -> NoteValues:
     """

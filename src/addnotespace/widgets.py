@@ -135,7 +135,7 @@ class PreviewSketch(QWidget):
     main_window: "MainWindow" = None  #:
 
     #: fraction of the available space the preview can occupy
-    background_slide_mod = 8 / 10
+    background_slide_mod = 9.5 / 10
 
     title_left = 1 / 10  #: ratio of slide width as space to the left of the title
     title_top = 1 / 10  #: ratio of slide width as space to the top of the title

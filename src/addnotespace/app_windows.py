@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QLayout,
     QProgressBar,
+    QButtonGroup,
 )
 from PyQt5.QtGui import QIntValidator, QIcon
 from PyQt5.QtCore import QSize, Qt, QThread, pyqtSignal
@@ -56,6 +57,8 @@ class MainWindow(QMainWindow):
 
     preview_sketch: "PreviewSketch" = None
 
+    preview_ratio_button_group: QButtonGroup = None
+
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
 
@@ -98,6 +101,21 @@ class MainWindow(QMainWindow):
         self.margin_right_line_edit.textChanged.connect(self.preview_sketch.update)
         self.margin_bot_line_edit.textChanged.connect(self.preview_sketch.update)
         self.margin_left_line_edit.textChanged.connect(self.preview_sketch.update)
+
+        self.preview_ratio_button_group.buttonClicked.connect(self.update_preview_ratio)
+
+    def update_preview_ratio(self):
+        """
+        Sets the preview sketches ratio and updates the sketch.
+        """
+
+        button = self.preview_ratio_button_group.checkedButton()
+        width, height = button.text().split(":")
+
+        self.preview_sketch.slide_ratio_w = int(width)
+        self.preview_sketch.slide_ratio_h = int(height)
+
+        self.preview_sketch.update()
 
     #####################
     ### RUN FUNCTIONS ###
@@ -508,6 +526,8 @@ class MainWindow(QMainWindow):
         bot = self.margin_bot_line_edit.text()
         left = self.margin_left_line_edit.text()
 
+        sketch_ratio = self.preview_ratio_button_group.checkedButton().text()
+
         note_values = NoteValues(
             margin_top=int(top if top != "" else 0),
             margin_right=int(right if right != "" else 0),
@@ -517,6 +537,7 @@ class MainWindow(QMainWindow):
             bulk_name_ending=self.bulk_ending_line_edit.text(),
             single_file_folder=single_file_folder,
             single_file_target_folder=single_file_target_folder,
+            preview_sketch_ratio=sketch_ratio,
         )
 
         self.validate_and_modify_defaults(note_values)
@@ -544,6 +565,25 @@ class MainWindow(QMainWindow):
         self.single_new_name_line_edit.setPlaceholderText(
             values.single_file_target_folder
         )
+
+        self.check_preview_ratio_button(values.preview_sketch_ratio)
+
+    def check_preview_ratio_button(self, ratio: str):
+        """
+        Given a ratio string like :code:`4:3`, the right button
+        will be checked in the preview ration button group.
+
+        The preview will be updated.
+
+        Args:
+            ratio (str): ratio string. f.e. :code:`16:9`
+        """
+
+        for button in self.preview_ratio_button_group.buttons():
+            if button.text() == ratio:
+                button.setChecked(True)
+
+        self.update_preview_ratio()
 
     ####################
     ### VISUAL SETUP ###
