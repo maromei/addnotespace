@@ -50,6 +50,10 @@ InfoDialog[message_type="error"] QLabel {
     color: @error-text-color;
 }
 
+InfoDialog #dialog_container {
+    border: 2px solid @snow-storm-s3;
+}
+
 #ok_button {
     height: 1.5em;
     width: 1.5em;
