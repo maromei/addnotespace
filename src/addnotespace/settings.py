@@ -1,4 +1,5 @@
 import os
+import json
 
 from pathlib import Path
 from logging import getLogger
@@ -45,3 +46,6 @@ DEFAULT_PATH = os.environ.get("DEFAULT_PATH", "defaults.json")
 VERSION = __version__
 
 REPOSITORY_NAME = os.environ.get("REPOSITORY_NAME", "maromei/addnotespace")
+
+with open(STYLE_VARIABLE_PATH, "r") as f:
+    STYLE_VARIABLES = json.load(f)

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1300</width>
-    <height>626</height>
+    <height>555</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -561,6 +561,12 @@
           </item>
           <item>
            <widget class="QWidget" name="margin_form_container_mid" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
               <widget class="QWidget" name="margin_form_container_mid_1" native="true">
@@ -570,7 +576,13 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
                <layout class="QVBoxLayout" name="verticalLayout_10">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetDefaultConstraint</enum>
+                </property>
                 <item>
                  <widget class="QLabel" name="margin_left_label">
                   <property name="text">
@@ -662,13 +674,51 @@
               </widget>
              </item>
              <item>
-              <widget class="QWidget" name="margin_form_container_mid_2" native="true">
+              <widget class="PreviewSketch" name="preview_sketch" native="true">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>100</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>10000</width>
+                 <height>10000</height>
+                </size>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_3">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+               </layout>
               </widget>
              </item>
              <item>
@@ -753,6 +803,9 @@
               </widget>
              </item>
             </layout>
+            <zorder>margin_form_container_mid_1</zorder>
+            <zorder>margin_form_container_mid_3</zorder>
+            <zorder>preview_sketch</zorder>
            </widget>
           </item>
           <item>
@@ -925,6 +978,12 @@
    <class>DragLineEditBulk</class>
    <extends>QLineEdit</extends>
    <header>addnotespace/widgets.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PreviewSketch</class>
+   <extends>QWidget</extends>
+   <header>addnotespace/widgets.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

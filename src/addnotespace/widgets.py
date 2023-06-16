@@ -2,9 +2,12 @@ from pathlib import Path
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QLineEdit
-from PyQt5.QtGui import QDropEvent
-from PyQt5.QtCore import QUrl
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QLineEdit, QWidget
+from PyQt5.QtGui import QDropEvent, QPainter, QPen, QBrush, QColor, QPainterPath
+from PyQt5.QtCore import QUrl, QRect
+
+from addnotespace import settings
 
 # The import is only used for a type hint.
 # However, this already triggers a circular import.
@@ -122,3 +125,145 @@ class DragLineEditBulk(DragLineEdit):
             folder = str(file_path.parent)
 
         self.setText(folder)
+
+
+class PreviewSketch(QWidget):
+    """
+    The widget displays the preview slide with the margins.
+    """
+
+    main_window: "MainWindow" = None  #:
+
+    #: fraction of the available space the preview can occupy
+    background_slide_mod = 8 / 10
+
+    title_left = 1 / 10  #: ratio of slide width as space to the left of the title
+    title_top = 1 / 10  #: ratio of slide width as space to the top of the title
+    title_width = 8 / 10  #: ratio of slide width as title width
+    title_height = 4 / 10  #: ration of slide height as title height
+
+    item_left = 1.2 / 10  #: ratio of slide width as space to the left of the item
+    item_space = 3.5 / 10  #: ration of slide as space between title and item
+    item_height = 1 / 10  #: ratio of slide width as item width
+    item_width = 4 / 10  #: ratio of slide height as item height
+
+    #: ration of available space for the radius of corner rounding
+    rounding_mod = 1 / 50
+
+    #: the slide will always have this ratio. this is the width of the ratio
+    slide_ratio_w = 16
+    #: the slide will always have this ratio. this is the height of the ratio
+    slide_ratio_h = 9
+
+    def __init__(self, *args, **kwargs) -> None:
+        super(PreviewSketch, self).__init__(*args, **kwargs)
+
+    def paintEvent(self, event):
+
+        ###############
+        ### Margins ###
+        ###############
+
+        margins = self.main_window.create_note_values()
+
+        margins.margin_top /= 100
+        margins.margin_right /= 100
+        margins.margin_bot /= 100
+        margins.margin_left /= 100
+
+        #############
+        ### Setup ###
+        #############
+
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        rect = self.rect()
+
+        background_color = QColor(settings.STYLE_VARIABLES["snow-storm-s1"])
+        slide_color = QColor(settings.STYLE_VARIABLES["polar-night-s1"])
+
+        title_color = QColor(settings.STYLE_VARIABLES["aurora-red"])
+        item_color = QColor(settings.STYLE_VARIABLES["snow-storm-s1"])
+
+        rounding = rect.width() * self.rounding_mod
+
+        ##################
+        ### Rectangles ###
+        ##################
+
+        reference_w = 1 + margins.margin_left + margins.margin_right
+        reference_w *= self.slide_ratio_w
+
+        reference_h = 1 + margins.margin_top + margins.margin_bot
+        reference_h *= self.slide_ratio_h
+
+        reference_ratio = reference_w / reference_h
+        rect_ratio = rect.width() / rect.height()
+
+        if reference_w / reference_h < rect_ratio:
+
+            background_h = rect.height() * self.background_slide_mod
+            background_w = reference_ratio * background_h
+
+            background_rect = QRect(
+                int(rect.left() + (rect.width() - background_w) / 2),
+                int(rect.top() + (1 - self.background_slide_mod) / 2 * rect.height()),
+                int(background_w),
+                int(background_h),
+            )
+
+        else:
+
+            background_w = rect.width() * self.background_slide_mod
+            background_h = 1 / reference_ratio * background_w
+
+            background_rect = QRect(
+                int(rect.left() + (1 - self.background_slide_mod) / 2 * rect.width()),
+                int(rect.top() + (rect.height() - background_h) / 2),
+                int(background_w),
+                int(background_h),
+            )
+
+        slide_w = background_rect.width() / (
+            1 + margins.margin_left + margins.margin_right
+        )
+        slide_h = background_rect.height() / (
+            1 + margins.margin_top + margins.margin_bot
+        )
+
+        slide_rect = QRect(
+            int(background_rect.left() + margins.margin_left * slide_w),
+            int(background_rect.top() + margins.margin_top * slide_h),
+            int(slide_w),
+            int(slide_h),
+        )
+
+        title_rect = QRect(
+            int(slide_rect.left() + slide_rect.width() * self.title_left),
+            int(slide_rect.top() + slide_rect.height() * self.title_top),
+            int(slide_rect.width() * self.title_width),
+            int(slide_rect.height() * self.title_height),
+        )
+
+        item_rect = QRect(
+            int(slide_rect.left() + slide_rect.width() * self.item_left),
+            int(title_rect.top() + title_rect.height() * (1 + self.item_space)),
+            int(slide_rect.width() * self.item_width),
+            int(slide_rect.height() * self.item_height),
+        )
+
+        #############
+        ### Paint ###
+        #############
+
+        painter.setBrush(QBrush(background_color, QtCore.Qt.SolidPattern))
+        painter.drawRoundedRect(background_rect, rounding, rounding)
+
+        painter.setBrush(QBrush(slide_color, QtCore.Qt.SolidPattern))
+        painter.drawRoundedRect(slide_rect, rounding, rounding)
+
+        painter.setBrush(QBrush(title_color, QtCore.Qt.SolidPattern))
+        painter.drawRoundedRect(title_rect, rounding, rounding)
+
+        painter.setBrush(QBrush(item_color, QtCore.Qt.SolidPattern))
+        painter.drawRoundedRect(item_rect, rounding, rounding)

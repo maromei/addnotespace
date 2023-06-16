@@ -19,7 +19,7 @@ from PyQt5.QtCore import QSize, Qt, QThread, pyqtSignal
 
 from addnotespace import settings, pdf, updates
 from addnotespace.defaults import NoteValues, load_defaults, dump_defaults
-from addnotespace.widgets import DragLineEditBulk, DragLineEditSingle
+from addnotespace.widgets import DragLineEditBulk, DragLineEditSingle, PreviewSketch
 
 
 logger = getLogger(__name__)
@@ -53,6 +53,8 @@ class MainWindow(QMainWindow):
 
     bulk_run_button: QPushButton = None
     single_run_button: QPushButton = None
+
+    preview_sketch: "PreviewSketch" = None
 
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
@@ -90,6 +92,12 @@ class MainWindow(QMainWindow):
         self.single_run_button.pressed.connect(self.run_single)
 
         self.single_folder_line_edit.main_window = self
+        self.preview_sketch.main_window = self
+
+        self.margin_top_line_edit.textChanged.connect(self.preview_sketch.update)
+        self.margin_right_line_edit.textChanged.connect(self.preview_sketch.update)
+        self.margin_bot_line_edit.textChanged.connect(self.preview_sketch.update)
+        self.margin_left_line_edit.textChanged.connect(self.preview_sketch.update)
 
     #####################
     ### RUN FUNCTIONS ###
@@ -462,7 +470,7 @@ class MainWindow(QMainWindow):
         dump_defaults(default_values, settings.DEFAULT_PATH)
         self.write_values_to_fields(self.defaults)
 
-        message = InfoDialog("success", "Defaults were successfully saved.")
+        message = InfoDialog("info", "Defaults were successfully saved.")
         message.exec_()
 
     def create_note_values(self, use_single_folder_parents: bool = True) -> NoteValues:
@@ -495,11 +503,16 @@ class MainWindow(QMainWindow):
         bulk_folder = Path(self.bulk_folder_line_edit.text())
         bulk_folder = str(bulk_folder.absolute())
 
+        top = self.margin_top_line_edit.text()
+        right = self.margin_right_line_edit.text()
+        bot = self.margin_bot_line_edit.text()
+        left = self.margin_left_line_edit.text()
+
         note_values = NoteValues(
-            margin_top=int(self.margin_top_line_edit.text()),
-            margin_right=int(self.margin_right_line_edit.text()),
-            margin_bot=int(self.margin_bot_line_edit.text()),
-            margin_left=int(self.margin_left_line_edit.text()),
+            margin_top=int(top if top != "" else 0),
+            margin_right=int(right if right != "" else 0),
+            margin_bot=int(bot if bot != "" else 0),
+            margin_left=int(left if left != "" else 0),
             bulk_folder=bulk_folder,
             bulk_name_ending=self.bulk_ending_line_edit.text(),
             single_file_folder=single_file_folder,
@@ -686,12 +699,12 @@ class InfoDialog(QDialog):
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
 
         if message_type not in self.MESSAGE_TYPE_DISPLAY_MAP.keys():
-            message_type = "info"
             logger.warning(
                 "The Info Dialog was created with an "
                 f"invalid message type: '{message_type}'. "
                 "Switched back to type 'info'."
             )
+            message_type = "info"
 
         self.setProperty("message_type", message_type)
 
