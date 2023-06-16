@@ -1,5 +1,7 @@
 # AddNoteSpace
 
+![](demo_screenshot.png)
+
 **Table of Contents**
 
 - [Overview](#overview)
