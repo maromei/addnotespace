@@ -46,3 +46,6 @@ For easy access create a shortcut for the `addnotespace.exe` and
 - Added the ability to drag files and folders to the bulk folder and single file input.
 - Choosing a file for a single run, will automatically fill the new file location with the same folder and same name using the bulk file suffix.
 - Should one of the file input fields already be populated, then the file dialoge will try to open in that directory instead of using the defaults.
+- Added a visualisation for the chosen whitespace values
+- Added a percent indicator for the whitespace values
+- Added a radio select buttons for choosing the preview slide ratio. This will also be included in the default values.
