@@ -159,6 +159,12 @@ class PreviewSketch(QWidget):
         super(PreviewSketch, self).__init__(*args, **kwargs)
 
     def paintEvent(self, event):
+        """
+        Draws the preview.
+
+        Args:
+            event (QEvent):
+        """
 
         ###############
         ### Margins ###
