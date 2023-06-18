@@ -1,3 +1,4 @@
+import sys
 import os
 from pathlib import Path
 from logging import getLogger
@@ -234,6 +235,11 @@ class MainWindow(QMainWindow):
         out_file_name = ".".join(out_file_name[:-1])
         out_file_name = f"{out_file_name}{file_suffix}.pdf"
 
+        # windows path conversion. Would work without it, but for
+        # consistency of display, it is still done
+        if sys.platform == "win32":
+            out_file_name = out_file_name.replace("/", "\\")
+
         self.single_new_name_line_edit.setText(out_file_name)
 
     ###################
@@ -262,6 +268,11 @@ class MainWindow(QMainWindow):
 
         if dir_name == "":
             return
+
+        # windows path conversion. Would work without it, but for
+        # consistency of display, it is still done
+        if sys.platform == "win32":
+            dir_name = dir_name.replace("/", "\\")
 
         self.bulk_folder_line_edit.setText(dir_name)
 
@@ -293,6 +304,11 @@ class MainWindow(QMainWindow):
         if file_name == "":
             return
 
+        # windows path conversion. Would work without it, but for
+        # consistency of display, it is still done
+        if sys.platform == "win32":
+            file_name = file_name.replace("/", "\\")
+
         self.single_folder_line_edit.setText(file_name)
         self.auto_set_single_new_file(file_name)
 
@@ -320,6 +336,11 @@ class MainWindow(QMainWindow):
 
         if file_name == "":
             return
+
+        # windows path conversion. Would work without it, but for
+        # consistency of display, it is still done
+        if sys.platform == "win32":
+            file_name = file_name.replace("/", "\\")
 
         self.single_new_name_line_edit.setText(file_name)
 
