@@ -129,6 +129,10 @@ class MainWindow(QMainWindow):
 
         super(MainWindow, self).show(*args, **kwargs)
 
+        # Checking for updates results in windows recognizing the final
+        # program as a virus. --> removed for now
+        return
+
         if not updates.is_new_version_available():
             return
 
