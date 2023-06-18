@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 from logging import getLogger
 from typing import TYPE_CHECKING
@@ -74,6 +75,10 @@ class DragLineEdit(QLineEdit):
 
         file_path: QUrl = event.mimeData().urls()[-1]
         file_path = file_path.path()
+
+        # remove the leading / for windows file paths
+        if sys.platform == "win32":
+            file_path = file_path[1:]
 
         return file_path
 
