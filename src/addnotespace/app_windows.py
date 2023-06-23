@@ -215,7 +215,7 @@ class MainWindow(QMainWindow):
 
         self.write_values_to_fields(values)
 
-    def auto_set_single_new_file(self, single_path: str):
+    def auto_set_single_new_file(self, single_path: str) -> str:
         """
         Automatically sets the new file name for a single path.
         It uses the singel path + the bulk suffix.
@@ -224,6 +224,9 @@ class MainWindow(QMainWindow):
 
         Args:
             single_path (str): The selected single file path.
+
+        Returns:
+            str: The out file name.
         """
 
         file_suffix = self.bulk_ending_line_edit.text().strip()
@@ -241,6 +244,7 @@ class MainWindow(QMainWindow):
             out_file_name = out_file_name.replace("/", "\\")
 
         self.single_new_name_line_edit.setText(out_file_name)
+        return out_file_name
 
     ###################
     ### OPEN DIOLOG ###

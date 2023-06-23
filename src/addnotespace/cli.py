@@ -107,9 +107,19 @@ def run_cli_job(args: argparse.Namespace, main_window: MainWindow):
     values.margin_bot = arg_dic.get("bot", values.margin_bot)
     values.margin_left = arg_dic.get("top", values.margin_left)
 
+    # We need to set the line ending to the main window line edit
+    # because the auto_set_single_new_file function we use for
+    # the single run, reads this line edit.
+    # That function is used to generated a default new name
+    # should nothing be given as output in the cli.
+    values.bulk_name_ending = arg_dic.get("bulk_suffix", values.bulk_name_ending)
+    main_window.bulk_ending_line_edit.setText(values.bulk_name_ending)
+
     if arg_dic.get("file") is not None:
         path = Path(arg_dic.get("file")).resolve()
         values.single_file_folder = str(path)
+        new_file_name = main_window.auto_set_single_new_file(str(path))
+        values.single_file_target_folder = new_file_name
 
     if arg_dic.get("directory") is not None:
         path = Path(arg_dic.get("directory")).resolve()
@@ -118,7 +128,6 @@ def run_cli_job(args: argparse.Namespace, main_window: MainWindow):
     values.single_file_target_folder = arg_dic.get(
         "output", values.single_file_target_folder
     )
-    values.bulk_name_ending = arg_dic.get("bulk_suffix", values.bulk_name_ending)
 
     ##############
     ### Errors ###
