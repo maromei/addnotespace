@@ -39,4 +39,5 @@ For easy access create a shortcut for the `addnotespace.exe` and
 - script like execution
 - tooltip
 - only deploy finished style sheet
+- sphinx doc
 - figure out how to check for updates without triggering windows defender
