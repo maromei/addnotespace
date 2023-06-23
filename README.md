@@ -34,7 +34,6 @@ For easy access create a shortcut for the `addnotespace.exe` and
 
 `addnotespace` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
 
-
 ## TODO:
 
 - tooltip
