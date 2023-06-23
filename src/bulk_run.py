@@ -14,7 +14,8 @@ from addnotespace.app_windows import InfoDialog, MainWindow
 
 logger = logging.getLogger(__name__)
 
-if __name__ == "__main__":
+
+def run():
 
     app = QApplication(sys.argv)
     style_loader.load_styles(app, settings.STYLE_SHEET_PATH)
@@ -32,3 +33,12 @@ if __name__ == "__main__":
         logger.error(message)
         info_dialogue = InfoDialog("error", message)
         info_dialogue.exec_()
+
+
+if __name__ == "__main__":
+
+    try:
+        run()
+    except Exception as e:
+        logger.error(f"Error in Bulk-Run: {e}")
+        raise e

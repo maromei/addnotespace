@@ -1,5 +1,6 @@
 import sys
 import logging.config
+from logging import getLogger
 
 from logger_config import LOGGING_CONFIG
 from initilialize import create_log_dir
@@ -13,7 +14,10 @@ from addnotespace.app_windows import MainWindow
 from addnotespace import settings, style_loader, cli
 
 
-if __name__ == "__main__":
+logger = getLogger(__name__)
+
+
+def run():
 
     parser = cli.setup_arg_parser()
     args = parser.parse_args()
@@ -36,3 +40,12 @@ if __name__ == "__main__":
     else:
         window.show()
         app.exec_()
+
+
+if __name__ == "__main__":
+
+    try:
+        run()
+    except Exception as e:
+        logger.error(f"Error in Main: {e}")
+        raise e

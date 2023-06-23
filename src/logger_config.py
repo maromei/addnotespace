@@ -39,6 +39,7 @@ DEFAULT_LOGGER_CONFIG = {
 
 LOGGERS = {
     "": DEFAULT_LOGGER_CONFIG,
+    "__main__": DEFAULT_LOGGER_CONFIG,
     "addnotespace": DEFAULT_LOGGER_CONFIG,
     "addnotespace.settings": DEFAULT_LOGGER_CONFIG,
     "addnotespace.style_loader": DEFAULT_LOGGER_CONFIG,
