@@ -141,6 +141,7 @@ def run_cli_job(args: argparse.Namespace, main_window: MainWindow):
             print(f"{i}: {error.error_text.text()}")
 
         print("\nExiting...")
+        return
 
     ###########
     ### Run ###
