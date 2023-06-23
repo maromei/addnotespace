@@ -37,7 +37,6 @@ For easy access create a shortcut for the `addnotespace.exe` and
 ## TODO:
 
 - script like execution
-- linux install via pip
 - tooltip
 - only deploy finished style sheet
 - figure out how to check for updates without triggering windows defender
