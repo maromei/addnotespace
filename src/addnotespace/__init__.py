@@ -15,9 +15,3 @@ if DOTENV_PATH is not None:
 
     if path != "":
         load_dotenv(DOTENV_PATH, verbose=True)
-        logger.info(f"Succesfully loaded dotenv file from '{path}'")
-    else:
-        logger.warning(f"Unable to find dotenv file at '{path}'")
-
-else:
-    logger.info(f"'DOTENV_PATH' was not set in the environment.")
