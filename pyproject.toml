@@ -57,9 +57,14 @@ dependencies = [
 ]
 
 [tool.hatch.envs.build.scripts]
-build = [
+windows = [
   "python scripts/write_version_to_file.py",
   "python setup.py build",
   "powershell ./scripts/post_build_cleanup.ps1"
+]
+linux = [
+  "python scripts/write_version_to_file.py",
+  "python setup.py build",
+  "./scripts/post_build_cleanup.sh"
 ]
 write_version = "python scripts/write_version_to_file.py"

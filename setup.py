@@ -8,7 +8,7 @@ from src.__about__ import __version__
 
 version = __version__
 
-build_name = f"addnotespace_v{version}_x86"
+build_name = f"addnotespace_v{version}_x86_{sys.platform}"
 build_path = f"build/{build_name}"
 build_zip = f"{build_path}.zip"
 
@@ -28,9 +28,7 @@ build_options = {
 base = "Win32GUI" if sys.platform == "win32" else None
 
 executables = [
-    Executable(
-        "src/main.py", base=base, icon=icon_path, target_name="addnotespace.exe"
-    ),
+    Executable("src/main.py", base=base, icon=icon_path, target_name="addnotespace"),
     Executable("src/bulk_run.py", base=base, icon=icon_path),
 ]
 
