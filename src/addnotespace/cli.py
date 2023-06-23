@@ -138,7 +138,7 @@ def run_cli_job(args: argparse.Namespace, main_window: MainWindow):
             "process the request:\n"
         )
         for i, error in enumerate(errors):
-            print(f"{i}: {error.error_text.text()}")
+            print(f"{i+1}: {error.error_text.text()}")
 
         print("\nExiting...")
         return
