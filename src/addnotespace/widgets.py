@@ -102,7 +102,9 @@ class DragLineEditSingle(DragLineEdit):
         """
 
         file_path: QUrl = self.get_drop_file_path(event)
-        self.setText(file_path)
+        file_path: Path = Path(file_path).absolute()
+
+        self.setText(str(file_path))
 
         if self.main_window is not None:
             self.main_window.auto_set_single_new_file(file_path)
