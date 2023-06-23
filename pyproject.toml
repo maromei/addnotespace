@@ -38,6 +38,7 @@ run-bulk = "python src/bulk_run.py"
 
 [tool.hatch.envs.default.env-vars]
 DOTENV_PATH = "env_files/dev.env"
+DEV_MODE = "1"
 
 [tool.hatch.envs.style]
 skip-install = true

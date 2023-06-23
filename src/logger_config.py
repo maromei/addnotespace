@@ -1,6 +1,9 @@
+import os
 from pathlib import Path
 
-BASE_PATH = Path(__file__).parent.parent
+BASE_PATH = Path(__file__).parent.parent.parent
+if bool(int(os.environ.get("DEV_MODE", "0"))):
+    BASE_PATH = Path(__file__).parent.parent
 
 LOGGING_FORMATTERS = {
     "standard": {
