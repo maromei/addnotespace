@@ -8,6 +8,6 @@ def create_log_dir():
     """
 
     log_dir = Path(__file__).parent.parent / "logs"
-    print(log_dir)
+
     if not log_dir.exists():
         os.makedirs(log_dir)

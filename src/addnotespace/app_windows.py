@@ -677,10 +677,15 @@ def run_bulk(values: NoteValues, is_gui: bool = True):
         out_files.append(str(bulk_folder / out_file_name))
 
     if len(file_list) == 0:
-        message = InfoDialog(
-            "info", f"No PDF File was found in the directory: '{bulk_folder}'"
-        )
-        message.exec_()
+
+        msg_string = f"No PDF File was found in the directory: '{bulk_folder}'"
+        message = InfoDialog("info", msg_string)
+
+        if is_gui:
+            message.exec_()
+        else:
+            print(msg_string)
+            return
 
     progress_dialogue = MarginProgressDialog(
         file_list,
