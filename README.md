@@ -24,10 +24,11 @@ there is an additional `run_bulk.exe`, which uses your default values.
 ## Installation
 
 Head to the [Releases page](https://github.com/maromei/addnotespace/releases)
-and download the latest `*.zip` file. The extracted content can be placed anywhere on
+and download the latest `*.zip` file. For your platform.
+The extracted content can be placed anywhere on
 your pc. This tool functions as a standalone.
 For easy access create a shortcut for the `addnotespace.exe` and
-`run_bulk.exe`.
+`run_bulk.exe` on windows. On linux you should add these binaries to your path.
 
 ## License
 
