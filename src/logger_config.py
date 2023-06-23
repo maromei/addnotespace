@@ -1,3 +1,7 @@
+from pathlib import Path
+
+BASE_PATH = Path(__file__).parent.parent
+
 LOGGING_FORMATTERS = {
     "standard": {
         "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
@@ -15,7 +19,7 @@ LOGGING_HANDLERS = {
         "level": "INFO",
         "formatter": "standard",
         "class": "logging.handlers.RotatingFileHandler",
-        "filename": "logs/log.txt",
+        "filename": str(BASE_PATH / "logs/log.txt"),
         "mode": "a+",
         "maxBytes": 5 * 10**6,  # 5 MegaBytes
         "backupCount": 1,

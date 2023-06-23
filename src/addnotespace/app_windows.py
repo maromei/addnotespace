@@ -648,13 +648,15 @@ class MainWindow(QMainWindow):
         self.single_new_name_button.setIconSize(icon_size)
 
 
-def run_bulk(values: NoteValues):
+def run_bulk(values: NoteValues, is_gui: bool = True):
     """
     This function does a bulk run with the given values.
     If no PDF FIle was found, the corresponding error will be displayed.
 
     Args:
         values (NoteValues): The configuration for the bulk run
+        is_gui (bool): If True, a GUI for the progress will be displayed.
+            Otherwise console output will be generated.
     """
 
     bulk_folder = Path(values.bulk_folder).absolute()
@@ -687,17 +689,20 @@ def run_bulk(values: NoteValues):
         int(values.margin_right) / 100,
         int(values.margin_bot) / 100,
         int(values.margin_left) / 100,
+        is_gui=is_gui,
     )
 
     progress_dialogue.exec_()
 
 
-def run_single(values: NoteValues):
+def run_single(values: NoteValues, is_gui: bool = True):
     """
     Does a single run with the given values.
 
     Args:
         values (NoteValues): values for the run
+        is_gui (bool): If True, a GUI for the progress will be displayed.
+            Otherwise console output will be generated.
     """
 
     file_name = Path(values.single_file_folder).absolute()
@@ -714,6 +719,7 @@ def run_single(values: NoteValues):
         int(values.margin_right) / 100,
         int(values.margin_bot) / 100,
         int(values.margin_left) / 100,
+        is_gui=is_gui,
     )
 
     progress_dialogue.exec_()
@@ -796,6 +802,8 @@ class MarginProgressDialog(QDialog):
     progress_bar: QProgressBar  #:
     progress_text: QLabel  #:
 
+    is_gui: bool
+
     def __init__(
         self,
         in_paths: list[str],
@@ -804,6 +812,7 @@ class MarginProgressDialog(QDialog):
         right_mod: float,
         bot_mod: float,
         left_mod: float,
+        is_gui: bool = True,
         *args,
         **kwargs,
     ):
@@ -819,8 +828,12 @@ class MarginProgressDialog(QDialog):
             right_mod (float): right mod as fraction
             bot_mod (float): bot mod as fraction
             left_mod (float): left mod as fraction
+            is_gui (bool): If True the progress will be displayed
+                as a GUI, otherwise only print statements will be made.
         """
         super(MarginProgressDialog, self).__init__(*args, **kwargs)
+
+        self.is_gui = is_gui
 
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
         uic.loadUi(settings.PROGRESS_DIALOGUE_UI_PATH, self)
@@ -833,7 +846,9 @@ class MarginProgressDialog(QDialog):
 
         self.margin_thread.progress_signal.connect(self.update_progress_bar)
         self.margin_thread.progress_text_signal.connect(self.update_working_on_text)
-        self.margin_thread.start()
+
+        if is_gui:
+            self.margin_thread.start()
 
     def update_progress_bar(self, progress_value: int):
         """
@@ -853,12 +868,17 @@ class MarginProgressDialog(QDialog):
     def update_working_on_text(self, display_text: str):
         """
         Sets the progress value to display.
+        If :code:`is_gui` is :code:`True` then console output is generated.
 
         Args:
             display_text (str):
         """
 
         self.progress_text.setText(display_text)
+
+        if not self.is_gui:
+            terminal_size = os.get_terminal_size()
+            sys.stdout.write(f"{display_text.ljust(terminal_size.columns, ' ')}\r")
 
     def finish(self):
         """
@@ -867,6 +887,36 @@ class MarginProgressDialog(QDialog):
 
         self.finish_button.setText("Close")
         self.finish_button.setEnabled(True)
+        sys.stdout.flush()
+        print("\nDone.")
+
+    def exec_(self) -> int:
+        """
+        Executes the window.
+        If :code:`self.is_gui` is :code:`True`, no GUI window
+        will be created, but the thread will still be run.
+
+        Returns:
+            int: status code.
+        """
+
+        if self.is_gui:
+            return super(MarginProgressDialog, self).exec_()
+
+        self.margin_thread.run()
+        return 0
+
+    def exec(self) -> int:
+        """
+        Executes the window.
+        If :code:`self.is_gui` is :code:`True`, no GUI window
+        will be created, but the thread will still be run.
+
+        Returns:
+            int: status code.
+        """
+
+        return self.exec_()
 
 
 class AddMarginThread(QThread):

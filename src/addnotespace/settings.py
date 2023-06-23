@@ -9,7 +9,13 @@ from __about__ import __version__
 
 logger = getLogger(__name__)
 
-UI_FOLDER_PATH = Path(os.getcwd()) / os.environ.get("UI_FOLDER_PATH", "ui_files")
+# The parent chaining is due to the frozen file resulting in
+# addnotespace/lib/addnotespace/settings.pyc.
+# This parent chaining just so happens to also correspond to the
+# dev directory structure.
+BASE_PATH = Path(__file__).parent.parent.parent
+
+UI_FOLDER_PATH = BASE_PATH / os.environ.get("UI_FOLDER_PATH", "ui_files")
 
 STYLE_SHEET_PATH = UI_FOLDER_PATH / os.environ.get("STYLE_SHEET_NAME", "styles.qss")
 
@@ -41,7 +47,7 @@ FOLDER_ICON_PATH = UI_FOLDER_PATH / os.environ.get(
 
 APP_ICON_PATH = UI_FOLDER_PATH / os.environ.get("APP_ICON_NAME", "addnotespace.ico")
 
-DEFAULT_PATH = os.environ.get("DEFAULT_PATH", "defaults.json")
+DEFAULT_PATH = BASE_PATH / os.environ.get("DEFAULT_PATH", "defaults.json")
 
 VERSION = __version__
 

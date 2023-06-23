@@ -10,10 +10,13 @@ logging.config.dictConfig(LOGGING_CONFIG)
 from PyQt5.QtWidgets import QApplication
 
 from addnotespace.app_windows import MainWindow
-from addnotespace import settings, style_loader
+from addnotespace import settings, style_loader, cli
 
 
 if __name__ == "__main__":
+
+    parser = cli.setup_arg_parser()
+    args = parser.parse_args()
 
     app = QApplication(sys.argv)
 
@@ -27,6 +30,9 @@ if __name__ == "__main__":
     style_loader.load_styles(app, settings.STYLE_SHEET_PATH)
 
     window = MainWindow()
-    window.show()
 
-    app.exec_()
+    if cli.should_cli_run(args):
+        cli.run_cli_job(args, window)
+    else:
+        window.show()
+        app.exec_()
