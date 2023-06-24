@@ -896,8 +896,10 @@ class MarginProgressDialog(QDialog):
 
         self.finish_button.setText("Close")
         self.finish_button.setEnabled(True)
-        sys.stdout.flush()
-        print("\nDone.")
+
+        if not self.is_gui:
+            sys.stdout.flush()
+            print("\nDone.")
 
     def exec_(self) -> int:
         """
