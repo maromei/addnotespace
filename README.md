@@ -21,6 +21,15 @@ a single pdf file.
 The configuration can be saved and loaded at will. For adding space in bulk,
 there is an additional `run_bulk.exe`, which uses your default values.
 
+Features include:
+
+- Add whitespace to each side of the slides
+- Run on all pdfs in a directory, or select a single one
+- Drag and Drop of files/folders into the app
+- Save settings as default
+- Individual executable for running a bulk run
+- CLI
+
 ## Installation
 
 Head to the [Releases page](https://github.com/maromei/addnotespace/releases)
