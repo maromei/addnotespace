@@ -7,6 +7,7 @@ generated. Or without a base, but then a console opens.
 --> Create this standalone exe for cli jobs.
 """
 
+import sys
 import logging.config
 from logging import getLogger
 
@@ -15,6 +16,8 @@ from initilialize import create_log_dir
 
 create_log_dir()
 logging.config.dictConfig(LOGGING_CONFIG)
+
+from PyQt5.QtWidgets import QApplication
 
 from addnotespace.app_windows import MainWindow
 from addnotespace import cli
@@ -28,6 +31,7 @@ def run():
     parser = cli.setup_arg_parser()
     args = parser.parse_args()
 
+    app = QApplication(sys.argv)
     window = MainWindow()
     cli.run_cli_job(args, window)
 
