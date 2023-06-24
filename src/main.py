@@ -35,7 +35,7 @@ def run():
 
     window = MainWindow()
 
-    if cli.should_cli_run(args):
+    if cli.should_cli_run(args) and sys.platform != "win32":
         cli.run_cli_job(args, window)
     else:
         window.show()

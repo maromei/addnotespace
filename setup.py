@@ -32,6 +32,14 @@ executables = [
     Executable("src/bulk_run.py", base=base, icon=icon_path),
 ]
 
+# Standalone cli exe for windows without the GUI base. This means console opens
+# if not called from console. With the WIN32GUI base, console output would
+# crash the program.
+if sys.platform == "win32":
+    executables.append(
+        Executable("src/cli_exe.py", base=None, icon=icon_path, target_name="cli")
+    )
+
 setup(
     name="addnotespace",
     version=version,
