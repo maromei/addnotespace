@@ -1,6 +1,10 @@
 import argparse
+from logging import getLogger
 from pathlib import Path
 from addnotespace.app_windows import MainWindow, run_single, run_bulk
+
+
+logger = getLogger(__name__)
 
 
 def setup_arg_parser() -> argparse.ArgumentParser:

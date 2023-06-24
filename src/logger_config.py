@@ -48,6 +48,7 @@ LOGGERS = {
     "addnotespace.button_behaviour": DEFAULT_LOGGER_CONFIG,
     "addnotespace.updates": DEFAULT_LOGGER_CONFIG,
     "addnotespace.widgets": DEFAULT_LOGGER_CONFIG,
+    "addnotespace.cli": DEFAULT_LOGGER_CONFIG,
 }
 
 
