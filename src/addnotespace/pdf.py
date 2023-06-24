@@ -33,10 +33,10 @@ def add_margin(
 
         for i in range(nmbr_pages):
 
-            top_margin = pdf.pages[i].mediabox.width * Decimal(top_mod)
-            right_margin = pdf.pages[i].mediabox.height * Decimal(right_mod)
-            bot_margin = pdf.pages[i].mediabox.width * Decimal(bot_mod)
-            left_margin = pdf.pages[i].mediabox.height * Decimal(left_mod)
+            top_margin = pdf.pages[i].mediabox.height * Decimal(top_mod)
+            right_margin = pdf.pages[i].mediabox.width * Decimal(right_mod)
+            bot_margin = pdf.pages[i].mediabox.height * Decimal(bot_mod)
+            left_margin = pdf.pages[i].mediabox.width * Decimal(left_mod)
 
             page = pdf.pages[i]
 
