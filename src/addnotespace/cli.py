@@ -29,6 +29,13 @@ def setup_arg_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
+        "-br",
+        "--bulk-run",
+        action="store_true",
+        help="Stores true. Does a bulk run using default value.",
+    )
+
+    parser.add_argument(
         "-bs",
         "--bulk-suffix",
         help="The suffix added to each newly created file name in a bulk run.",
@@ -81,7 +88,7 @@ def should_cli_run(args: argparse.Namespace) -> bool:
     Returns:
         bool: Wether the CLI should be run instead of the GUI.
     """
-    return args.file is not None or args.directory is not None
+    return args.file is not None or args.directory is not None or args.bulk_run
 
 
 def run_cli_job(args: argparse.Namespace, main_window: MainWindow):
