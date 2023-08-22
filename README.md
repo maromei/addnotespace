@@ -39,12 +39,34 @@ your pc. This tool functions as a standalone.
 For easy access create a shortcut for the `addnotespace.exe` and
 `run_bulk.exe` on windows. On linux you should add these binaries to your path.
 
+## CLI
+
+It is possible to use the tools features via a command line interface.
+In linux the standard `addnotespace` binary can be used. However, due to some
+limitations with the building framework, windows users need to used `cli.exe`
+binary.
+
+### CLI options
+
+| short name | long name       | description                                                        |
+|------------|-----------------|--------------------------------------------------------------------|
+| `-f`       | `--file`        | Specify a file to add margins to.                                  |
+| `-d`       | `--directory`   | A directory where whitespace gets added to each file.              |
+| `-br`      | `--bulk-run`    | Boolean flag. Does a bulk run using default values.                |
+| `-bs`      | `--bulk-suffix` | The suffix added to each newly created file name in a bulk run.    |
+| `-o`       | `--output`      | The output file name for a single file run.                        |
+| `-t`       | `--top`         | Percentage of how much whitespace to add to the top of the pdf.    |
+| `-r`       | `--right`       | Percentage of how much whitespace to add to the right of the pdf.  |
+| `-b`       | `--bot`         | Percentage of how much whitespace to add to the bottom of the pdf. |
+| `-l`       | `--left`        | Percentage of how much whitespace to add to the left of the pdf.   |
+
 ## License
 
 `addnotespace` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
 
 ## TODO:
 
+- CLI pretty print defaults
 - tooltip
 - sphinx doc
 - figure out how to check for updates without triggering windows defender
