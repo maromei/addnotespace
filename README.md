@@ -42,8 +42,8 @@ For easy access create a shortcut for the `addnotespace.exe` and
 ## CLI
 
 It is possible to use the tools features via a command line interface.
-In linux the standard `addnotespace` binary can be used. However, due to some
-limitations with the building framework, windows users need to used `cli.exe`
+On linux the `addnotespace` binary can be used. However, due to some
+limitations with the building framework, windows users need to use `cli.exe`
 binary.
 
 ### CLI options
